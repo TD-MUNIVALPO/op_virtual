@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficina de Partes Digital - Municipalidad de Valparaíso</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muni-blue': '#294589',
+                        'muni-blue-dark': '#1e3a72',
+                        'muni-blue-darkest': '#0b2447',
+                        'muni-blue-light': '#60a5fa',
+                        'muni-yellow': '#ffdc04',
+                    }
+                }
+            }
+        }
+
+        // Script de inicialización - Descomenta para limpiar localStorage y cargar ejemplos
+        // localStorage.removeItem('solicitudes_op'); location.reload();
+    </script>
+</head>
+<body class="min-h-screen flex flex-col" style="background: var(--body-bg);">
+
+    <!-- Header Principal -->
+    <header class="header-principal h-32 flex items-center justify-between px-12 shadow-lg border-b relative overflow-hidden" 
+            style="border-color: var(--border-subtle);">
+        
+        <!-- Fondo con ilustración -->
+        <div class="absolute inset-0 pointer-events-none" 
+             style="background-image: url('images/valparaiso_ilustracion.png'); 
+                    background-size: 50%; 
+                    background-position: right center; 
+                    background-repeat: no-repeat;
+                    opacity: 0.2;"></div>
+
+        <!-- Luces animadas de fondo -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none lights-container">
+            <div class="light light-1"></div>
+            <div class="light light-2"></div>
+            <div class="light light-3"></div>
+            <div class="light light-4"></div>
+            <div class="light light-5"></div>
+            <div class="light light-6"></div>
+            <div class="light light-7"></div>
+            <div class="light light-8"></div>
+            <div class="light light-9"></div>
+            <div class="light light-10"></div>
+        </div>
+
+        <!-- Contenido del header -->
+        <div class="relative z-10 flex items-center gap-6">
+            <img src="images/Municipalidad-de-Valparaiso_logo_full color.png" 
+                 alt="Logo Municipalidad de Valparaíso" 
+                 class="h-28 w-auto drop-shadow-lg"
+                 onerror="this.style.display='none'">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold drop-shadow-md" style="color: #60a5fa;">Oficina de Partes Virtual</h1>
+                <p class="text-lg drop-shadow-sm" style="color: #93c5fd;">Municipalidad de Valparaíso</p>
+            </div>
+        </div>
+
+        <div class="relative z-10 flex items-center gap-4">
+            <!-- Botón de Cambio de Tema -->
+            <button id="theme-toggle" type="button" 
+                    class="flex items-center gap-2 px-4 py-3 rounded-lg transition-all hover:scale-105"
+                    style="background: rgba(30, 58, 114, 0.3); backdrop-filter: blur(8px); border: 1px solid rgba(147, 197, 253, 0.3);">
+                <i class="fas fa-moon text-slate-100" id="theme-icon"></i>
+                <span class="text-sm font-medium text-slate-100">Tema</span>
+            </button>
+
+            <!-- Reloj -->
+            <div class="text-right rounded-xl px-6 py-3 border" 
+                 style="background: rgba(30, 58, 114, 0.2); backdrop-filter: blur(8px); border-color: rgba(147, 197, 253, 0.3);">
+                <div class="text-slate-100 text-lg font-semibold flex items-center gap-2 justify-end">
+                    <i class="far fa-clock text-slate-100"></i>
+                    <span id="header-fecha"></span>
+                </div>
+                <div class="text-slate-100 text-3xl font-bold drop-shadow-md" id="header-hora"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="border-b" style="background: var(--card-bg); border-color: var(--border-card);">
+        <div class="container mx-auto px-4">
+            <div class="flex gap-2">
+                <button id="tab-ciudadano" class="tab-button active px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    <span>Vista Ciudadano</span>
+                </button>
+                <button id="tab-funcionario" class="tab-button px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Vista Funcionario</span>
+                </button>
+                <button id="tab-unidad-tecnica" class="tab-button px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
+                    <i class="fas fa-building"></i>
+                    <span>Unidad Técnica - Fiscalización</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+
+        <!-- Vista Ciudadano -->
+        <div id="vista-ciudadano" class="vista-content">
+            <div class="max-w-4xl mx-auto space-y-8">
+
+                <!-- Información Importante -->
+                <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #06b6d4;">
+                                <i class="fas fa-info-circle text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Oficina de Partes Virtual</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);">Información sobre tu solicitud</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm" style="color: var(--text-secondary);">
+                            Tu solicitud será revisada y derivada automáticamente a la unidad municipal correspondiente. El equipo responsable se contactará contigo para dar seguimiento a tu requerimiento.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Formulario de Solicitud -->
+                <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(59, 130, 246, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #10b981;">
+                                <i class="fas fa-file-alt text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Formulario de Solicitud</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);">Complete todos los campos requeridos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <form id="solicitud-form" class="space-y-4">
+
+                            <!-- Nombre Completo -->
+                            <div>
+                                <label for="nombre" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                    Nombre Completo <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="nombre" name="nombre" required
+                                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                       style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                       placeholder="Ej: Juan Pérez González">
+                                <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                            </div>
+
+                            <!-- Grid para RUT y Nombre Social -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- RUT -->
+                                <div>
+                                    <label for="rut" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        RUT <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="rut" name="rut" required
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="Ej: 12.345.678-9">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+
+                                <!-- Nombre Social -->
+                                <div>
+                                    <label for="nombre-social" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Nombre Social
+                                    </label>
+                                    <input type="text" id="nombre-social" name="nombre-social"
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="Nombre con el que prefieres ser llamado/a">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+                            </div>
+
+                            <!-- Grid para Fecha de Nacimiento y Género -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Fecha de Nacimiento -->
+                                <div>
+                                    <label for="fecha-nacimiento" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Fecha de Nacimiento <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" required
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+
+                                <!-- Género -->
+                                <div>
+                                    <label for="genero" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Género <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="genero" name="genero" required
+                                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                            style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                        <option value="">Seleccione...</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="femenino">Femenino</option>
+                                        <option value="no-binario">No binario</option>
+                                        <option value="otro">Otro</option>
+                                        <option value="prefiero-no-decir">Prefiero no decir</option>
+                                    </select>
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+                            </div>
+
+                            <!-- Grid para Correo 1 y Correo 2 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Correo 1 -->
+                                <div>
+                                    <label for="email" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Correo Electrónico 1 <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="email" id="email" name="email" required
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="correo@ejemplo.com">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+
+                                <!-- Correo 2 (Opcional) -->
+                                <div>
+                                    <label for="email2" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Correo Electrónico 2 (Opcional)
+                                    </label>
+                                    <input type="email" id="email2" name="email2"
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="correo.alternativo@ejemplo.com">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+                            </div>
+
+                            <!-- Grid para Teléfono 1 y Teléfono 2 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Teléfono 1 -->
+                                <div>
+                                    <label for="telefono" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Teléfono 1 <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="tel" id="telefono" name="telefono" required
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="Ej: +56912345678">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+
+                                <!-- Teléfono 2 (Opcional) -->
+                                <div>
+                                    <label for="telefono2" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                        Teléfono 2 (Opcional)
+                                    </label>
+                                    <input type="tel" id="telefono2" name="telefono2"
+                                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                           placeholder="Ej: +56912345678">
+                                    <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                </div>
+                            </div>
+
+                            <!-- Dirección -->
+                            <div>
+                                <label for="direccion" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                    Dirección <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="direccion" name="direccion" required
+                                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                       style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                       placeholder="Ej: Calle Principal 123, Valparaíso">
+                                <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                            </div>
+
+                            <!-- Descripción de la Solicitud -->
+                            <div>
+                                <label for="descripcion" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                    Descripción de la Solicitud <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="descripcion" name="descripcion" rows="6" required
+                                          class="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                          style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                          placeholder="Describa detalladamente su solicitud o consulta..."></textarea>
+                                <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                            </div>
+
+                            <!-- Adjuntar Archivo -->
+                            <div>
+                                <label for="archivo" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                    Adjuntar Archivo (Opcional)
+                                </label>
+                                <div class="relative">
+                                    <input type="file" id="archivo" name="archivo" 
+                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                           class="hidden"
+                                           onchange="actualizarNombreArchivo(this)">
+                                    <label for="archivo" 
+                                           class="w-full px-3 py-2 border rounded-lg cursor-pointer flex items-center justify-between transition-colors hover:opacity-80"
+                                           style="background: var(--input-bg); border-color: var(--input-border); color: var(--text-secondary);">
+                                        <span class="flex items-center gap-2">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span id="nombre-archivo">Seleccionar archivo...</span>
+                                        </span>
+                                        <i class="fas fa-upload"></i>
+                                    </label>
+                                </div>
+                                <p class="text-xs mt-1" style="color: var(--text-secondary);">
+                                    Formatos permitidos: PDF, Word, JPG, PNG (máx. 5MB)
+                                </p>
+                                <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="flex gap-3 pt-4">
+                                <button type="submit" class="flex-1 inline-flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-colors"
+                                        style="background: var(--btn-primary-bg);">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Enviar Solicitud
+                                </button>
+                                <button type="button" id="btn-limpiar" class="inline-flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-colors"
+                                        style="background: var(--btn-secondary-bg);">
+                                    <i class="fas fa-eraser mr-2"></i>
+                                    Limpiar
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resumen de Solicitud (oculto inicialmente) -->
+                <div id="resumen-solicitud" class="rounded-lg border overflow-hidden hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(34, 197, 94, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #22c55e;">
+                                <i class="fas fa-check-circle text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Solicitud Enviada Exitosamente</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);">Guarde su número de seguimiento</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 space-y-4">
+                        <!-- ID de Seguimiento -->
+                        <div class="p-4 rounded-lg border" style="background: var(--section-bg); border-color: var(--border-card);">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-medium mb-1" style="color: var(--text-secondary);">Número de Seguimiento</p>
+                                    <p id="numero-seguimiento" class="text-2xl font-bold text-muni-blue"></p>
+                                </div>
+                                <div class="w-12 h-12 bg-muni-blue rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-hashtag text-white text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Datos de la Solicitud -->
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-user mt-1" style="color: var(--text-secondary);"></i>
+                                <div>
+                                    <p class="text-xs font-medium" style="color: var(--text-secondary);">Nombre</p>
+                                    <p id="resumen-nombre" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-id-card mt-1" style="color: var(--text-secondary);"></i>
+                                <div>
+                                    <p class="text-xs font-medium" style="color: var(--text-secondary);">RUT</p>
+                                    <p id="resumen-rut" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-envelope mt-1" style="color: var(--text-secondary);"></i>
+                                <div>
+                                    <p class="text-xs font-medium" style="color: var(--text-secondary);">Correo</p>
+                                    <p id="resumen-email" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-phone mt-1" style="color: var(--text-secondary);"></i>
+                                <div>
+                                    <p class="text-xs font-medium" style="color: var(--text-secondary);">Teléfono</p>
+                                    <p id="resumen-telefono" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-file-alt mt-1" style="color: var(--text-secondary);"></i>
+                                <div class="flex-1">
+                                    <p class="text-xs font-medium" style="color: var(--text-secondary);">Descripción</p>
+                                    <p id="resumen-descripcion" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón Nueva Solicitud -->
+                        <button id="btn-nueva-solicitud" class="w-full inline-flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-colors"
+                                style="background: var(--btn-primary-bg);">
+                            <i class="fas fa-plus mr-2"></i>
+                            Enviar Nueva Solicitud
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Vista Funcionario -->
+        <div id="vista-funcionario" class="vista-content hidden">
+            <div class="space-y-8">
+
+                <!-- Tabla de Solicitudes -->
+                <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(59, 130, 246, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-muni-blue rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-table text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Bandeja de Entrada</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);"><span id="count-solicitudes">0</span> solicitudes encontradas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tabla-solicitudes-container" class="overflow-x-auto">
+                        <table class="min-w-full divide-y" style="border-color: var(--table-border);">
+                            <thead style="background: var(--table-header-bg);">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Solicitante</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Contacto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Descripción</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Estado</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase" style="color: var(--table-header-text);">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-solicitudes-body" class="divide-y" style="border-color: var(--table-border);">
+                                <!-- Las filas se generarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estado vacío -->
+                    <div id="estado-vacio" class="text-center py-12">
+                        <i class="fas fa-inbox text-4xl mb-4" style="color: var(--text-muted);"></i>
+                        <h3 class="text-lg font-medium mb-2" style="color: var(--text-primary);">No hay solicitudes</h3>
+                        <p class="mb-4" style="color: var(--text-secondary);">Las solicitudes enviadas aparecerán aquí</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Vista Unidad Técnica - Fiscalización -->
+        <div id="vista-unidad-tecnica" class="vista-content hidden">
+            <div class="space-y-8">
+
+                <!-- Tabla de Solicitudes de la Unidad -->
+                <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(147, 51, 234, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #9333ea;">
+                                <i class="fas fa-table text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Bandeja de Entrada - Fiscalización</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);"><span id="count-solicitudes-ut">0</span> solicitudes asignadas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tabla-solicitudes-ut-container" class="overflow-x-auto">
+                        <table class="min-w-full divide-y" style="border-color: var(--table-border);">
+                            <thead style="background: var(--table-header-bg);">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Solicitante</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Contacto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Descripción</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase" style="color: var(--table-header-text);">Estado</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium uppercase" style="color: var(--table-header-text);">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-solicitudes-ut-body" class="divide-y" style="border-color: var(--table-border);">
+                                <!-- Las filas se generarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estado vacío -->
+                    <div id="estado-vacio-ut" class="text-center py-12">
+                        <i class="fas fa-inbox text-4xl mb-4" style="color: var(--text-muted);"></i>
+                        <h3 class="text-lg font-medium mb-2" style="color: var(--text-primary);">No hay solicitudes asignadas</h3>
+                        <p class="mb-4" style="color: var(--text-secondary);">Las solicitudes derivadas a Fiscalización aparecerán aquí</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Detalle de Solicitud -->
+    <div id="modal-detalle" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-content rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card); max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                
+                <!-- Header del Modal -->
+                <div class="px-6 py-4 border-b flex items-center justify-between" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(59, 130, 246, 0.12) 100%); border-color: var(--border-card);">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-muni-blue rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold" style="color: var(--text-primary);">Detalle de Solicitud</h3>
+                            <p class="text-sm" style="color: var(--text-secondary);" id="modal-id-solicitud"></p>
+                        </div>
+                    </div>
+                    <button id="btn-cerrar-modal" class="text-2xl hover:opacity-75 transition-opacity" style="color: var(--text-secondary);">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Cuerpo del Modal -->
+                <div class="p-6 space-y-6">
+                    
+                    <!-- Información del Solicitante -->
+                    <div class="rounded-lg border p-4" style="background: var(--section-bg); border-color: var(--border-card);">
+                        <h4 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color: var(--text-primary);">
+                            <i class="fas fa-user"></i>
+                            Información del Solicitante
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <p class="text-xs" style="color: var(--text-secondary);">Nombre</p>
+                                <p class="text-sm font-medium" style="color: var(--text-primary);" id="modal-nombre"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs" style="color: var(--text-secondary);">RUT</p>
+                                <p class="text-sm font-medium" style="color: var(--text-primary);" id="modal-rut"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs" style="color: var(--text-secondary);">Email</p>
+                                <p class="text-sm font-medium" style="color: var(--text-primary);" id="modal-email"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs" style="color: var(--text-secondary);">Teléfono</p>
+                                <p class="text-sm font-medium" style="color: var(--text-primary);" id="modal-telefono"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción de la Solicitud -->
+                    <div class="rounded-lg border p-4" style="background: var(--section-bg); border-color: var(--border-card);">
+                        <h4 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color: var(--text-primary);">
+                            <i class="fas fa-align-left"></i>
+                            Descripción de la Solicitud
+                        </h4>
+                        <p class="text-sm leading-relaxed" style="color: var(--text-primary);" id="modal-descripcion"></p>
+                    </div>
+
+                    <!-- Archivo Adjunto -->
+                    <div id="modal-archivo-container" class="rounded-lg border p-4 hidden" style="background: var(--section-bg); border-color: var(--border-card);">
+                        <h4 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color: var(--text-primary);">
+                            <i class="fas fa-paperclip"></i>
+                            Archivo Adjunto
+                        </h4>
+                        <div class="flex items-center gap-2 px-3 py-2 rounded border" style="background: var(--input-bg); border-color: var(--input-border);">
+                            <i class="fas fa-file text-lg" style="color: var(--text-secondary);"></i>
+                            <span id="modal-archivo-nombre" class="text-sm" style="color: var(--text-primary);"></span>
+                        </div>
+                    </div>
+
+                    <!-- Asignación de Unidad Técnica -->
+                    <div class="rounded-lg border p-4" style="background: var(--section-bg); border-color: var(--border-card);">
+                        <h4 class="text-sm font-semibold mb-3 flex items-center gap-2" style="color: var(--text-primary);">
+                            <i class="fas fa-building"></i>
+                            Asignar Unidad Técnica
+                        </h4>
+                        <select id="modal-unidad-tecnica" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                            <option value="">-- Sin asignar --</option>
+                            <option value="desarrollo-economico">Desarrollo Económico</option>
+                            <option value="dat">DAT (Dirección de Asesoría Técnica)</option>
+                            <option value="parques-jardines">Parques y Jardines</option>
+                            <option value="alumbrado-publico">Alumbrado Público</option>
+                            <option value="fiscalizacion">Fiscalización</option>
+                            <option value="transito">Tránsito</option>
+                            <option value="patentes-comerciales">Patentes Comerciales</option>
+                        </select>
+                        <p class="text-xs mt-2" style="color: var(--text-secondary);">
+                            Seleccione la unidad responsable de gestionar esta solicitud
+                        </p>
+                    </div>
+
+                    <!-- Estado y Fecha -->
+                    <div class="rounded-lg border p-4" style="background: var(--section-bg); border-color: var(--border-card);">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <p class="text-xs mb-2" style="color: var(--text-secondary);">Estado Actual</p>
+                                <span id="modal-estado-badge" class="badge"></span>
+                            </div>
+                            <div>
+                                <p class="text-xs" style="color: var(--text-secondary);">Fecha de Creación</p>
+                                <p class="text-sm font-medium" style="color: var(--text-primary);" id="modal-fecha"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer del Modal -->
+                <div class="px-6 py-4 border-t flex gap-3" style="border-color: var(--border-card);">
+                    <button id="btn-guardar-asignacion" class="flex-1 px-4 py-2 rounded-lg text-white font-medium transition-colors"
+                            style="background: var(--btn-primary-bg);">
+                        <i class="fas fa-save mr-2"></i>
+                        Guardar Asignación
+                    </button>
+                    <button id="btn-cancelar-modal" class="px-4 py-2 rounded-lg text-white font-medium transition-colors"
+                            style="background: var(--btn-secondary-bg);">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t py-6" style="background: var(--card-bg); border-color: var(--border-card);">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm" style="color: var(--text-secondary);">
+                &copy; 2025 Municipalidad de Valparaíso - Oficina de Partes Digital
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+    
+    <!-- Utilidades Debug -->
+    <script>
+        // Función para cargar datos de ejemplo (ejecutar en consola)
+        window.cargarEjemplosDePrueba = function() {
+            localStorage.removeItem('solicitudes_op');
+            location.reload();
+        };
+        console.log('💡 Tip: Ejecuta cargarEjemplosDePrueba() en la consola para recargar datos de ejemplo');
+    </script>
+
+</body>
+</html>
