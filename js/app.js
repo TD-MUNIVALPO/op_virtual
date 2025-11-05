@@ -71,6 +71,19 @@ const APP = {
         return false;
     },
 
+    // Cambiar estado de unidad técnica (recepcionado, finalizado, rechazado)
+    cambiarEstadoUnidadTecnica(id, estadoUT) {
+        const solicitud = this.solicitudes.find(s => s.id === id);
+        if (solicitud) {
+            solicitud.estadoUnidadTecnica = estadoUT;
+            solicitud.fechaActualizacionUT = new Date().toISOString();
+            this.guardarSolicitudes();
+            console.log(`✅ Estado UT actualizado: ${id} -> ${estadoUT}`);
+            return true;
+        }
+        return false;
+    },
+
     // Obtener estadísticas
     obtenerEstadisticas() {
         return {
@@ -508,9 +521,53 @@ function actualizarNombreArchivo(input) {
 // ============================================
 
 const FuncionarioView = {
+    filtroActual: 'todas', // Filtro actual
+
     actualizar() {
         console.log('📋 FuncionarioView.actualizar() - Solicitudes:', APP.solicitudes.length);
         this.renderizarTabla();
+    },
+
+    // Inicializar filtros
+    initFiltros() {
+        const btnTodas = document.getElementById('filtro-todas');
+        const btnPendienteDerivacion = document.getElementById('filtro-pendiente-derivar');
+        const btnDerivadas = document.getElementById('filtro-derivadas');
+
+        if (btnTodas) btnTodas.addEventListener('click', () => this.aplicarFiltro('todas', btnTodas));
+        if (btnPendienteDerivacion) btnPendienteDerivacion.addEventListener('click', () => this.aplicarFiltro('pendiente-derivar', btnPendienteDerivacion));
+        if (btnDerivadas) btnDerivadas.addEventListener('click', () => this.aplicarFiltro('derivadas', btnDerivadas));
+    },
+
+    // Aplicar filtro
+    aplicarFiltro(filtro, boton) {
+        // Remover clase activa de todos los botones
+        document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('filtro-activo'));
+
+        // Agregar clase activa al botón clickeado
+        boton.classList.add('filtro-activo');
+
+        // Guardar filtro actual
+        this.filtroActual = filtro;
+
+        // Renderizar tabla con el filtro
+        this.renderizarTabla();
+    },
+
+    // Obtener solicitudes filtradas
+    obtenerSolicitudesFiltradas() {
+        let solicitudes = APP.solicitudes;
+
+        if (this.filtroActual === 'pendiente-derivar') {
+            // Solicitudes sin unidad técnica asignada
+            solicitudes = solicitudes.filter(s => !s.unidadTecnica || s.unidadTecnica === '');
+        } else if (this.filtroActual === 'derivadas') {
+            // Solicitudes con unidad técnica asignada
+            solicitudes = solicitudes.filter(s => s.unidadTecnica && s.unidadTecnica !== '');
+        }
+        // Si es 'todas', devuelve todas las solicitudes
+
+        return solicitudes;
     },
 
     renderizarTabla() {
@@ -519,13 +576,16 @@ const FuncionarioView = {
         const estadoVacio = document.getElementById('estado-vacio');
         const countSpan = document.getElementById('count-solicitudes');
 
-        console.log('🔍 Renderizando tabla con', APP.solicitudes.length, 'solicitudes');
+        // Obtener solicitudes filtradas
+        const solicitudes = this.obtenerSolicitudesFiltradas();
+
+        console.log('🔍 Renderizando tabla con', solicitudes.length, 'solicitudes (filtro:', this.filtroActual, ')');
 
         // Actualizar contador
-        countSpan.textContent = APP.solicitudes.length;
+        countSpan.textContent = solicitudes.length;
 
         // Si no hay solicitudes, mostrar estado vacío
-        if (APP.solicitudes.length === 0) {
+        if (solicitudes.length === 0) {
             console.log('⚠️ No hay solicitudes, mostrando estado vacío');
             container.style.display = 'none';
             estadoVacio.style.display = 'block';
@@ -540,7 +600,7 @@ const FuncionarioView = {
         tbody.innerHTML = '';
 
         // Renderizar filas (más recientes primero)
-        const solicitudesOrdenadas = [...APP.solicitudes].reverse();
+        const solicitudesOrdenadas = [...solicitudes].reverse();
 
         solicitudesOrdenadas.forEach(solicitud => {
             const fila = this.crearFilaSolicitud(solicitud);
@@ -557,7 +617,7 @@ const FuncionarioView = {
         tr.addEventListener('click', (e) => {
             // No abrir modal si se hace clic en un botón
             if (!e.target.closest('.action-button')) {
-                ModalDetalle.abrir(solicitud.id);
+                ModalDetalle.abrir(solicitud.id, 'funcionario');
             }
         });
 
@@ -637,6 +697,7 @@ const FuncionarioView = {
     crearBadgeEstado(solicitud) {
         const estado = solicitud.estado;
         const unidadTecnica = solicitud.unidadTecnica;
+        const estadoUT = solicitud.estadoUnidadTecnica;
         
         // Mapeo de valores a nombres legibles
         const unidadesNombres = {
@@ -649,7 +710,17 @@ const FuncionarioView = {
             'patentes-comerciales': 'Patentes Comerciales'
         };
         
-        // Si tiene unidad técnica asignada, mostrar derivación
+        // Si tiene estado de unidad técnica, mostrarlo prioritariamente
+        if (estadoUT) {
+            const estadosUT = {
+                'recepcionado': '<span class="badge badge-ut-recepcionado"><i class="fas fa-inbox mr-1"></i>Recepcionado</span>',
+                'finalizado': '<span class="badge badge-ut-finalizado"><i class="fas fa-check-circle mr-1"></i>Finalizado por UT</span>',
+                'rechazado': '<span class="badge badge-ut-rechazado"><i class="fas fa-times-circle mr-1"></i>Rechazado</span>'
+            };
+            return estadosUT[estadoUT] || estadosUT.recepcionado;
+        }
+        
+        // Si tiene unidad técnica asignada pero no tiene estado UT, mostrar derivación
         if (unidadTecnica && unidadTecnica !== '') {
             const nombreUnidad = unidadesNombres[unidadTecnica] || unidadTecnica;
             return `<span class="badge badge-revision"><i class="fas fa-share mr-1"></i>Derivado a: ${nombreUnidad}</span>`;
@@ -782,9 +853,13 @@ const UnidadTecnicaView = {
         
         // Hacer toda la fila clickeable (excepto botones)
         tr.addEventListener('click', (e) => {
+            console.log('🖱️ Click en fila de Unidad Técnica, ID:', solicitud.id);
             // No abrir modal si se hace clic en un botón
             if (!e.target.closest('.action-button')) {
-                ModalDetalle.abrir(solicitud.id);
+                console.log('📋 Abriendo modal desde UnidadTecnicaView');
+                ModalDetalle.abrir(solicitud.id, 'unidad-tecnica');
+            } else {
+                console.log('🚫 Click en botón, no abrir modal');
             }
         });
 
@@ -840,7 +915,7 @@ const UnidadTecnicaView = {
         // Columna Estado
         const tdEstado = document.createElement('td');
         tdEstado.className = 'px-6 py-4';
-        tdEstado.innerHTML = this.crearBadgeEstado(solicitud.estado);
+        tdEstado.innerHTML = this.crearBadgeEstado(solicitud);
 
         // Columna Acciones
         const tdAcciones = document.createElement('td');
@@ -939,6 +1014,7 @@ const ModalDetalle = {
         const btnCerrar = document.getElementById('btn-cerrar-modal');
         const btnCancelar = document.getElementById('btn-cancelar-modal');
         const btnGuardar = document.getElementById('btn-guardar-asignacion');
+        const btnGuardarEstadoUT = document.getElementById('btn-guardar-estado-ut');
 
         // Cerrar modal
         btnCerrar.addEventListener('click', () => this.cerrar());
@@ -954,6 +1030,17 @@ const ModalDetalle = {
         // Guardar asignación
         btnGuardar.addEventListener('click', () => this.guardarAsignacion());
 
+        // Guardar estado de unidad técnica
+        if (btnGuardarEstadoUT) {
+            btnGuardarEstadoUT.addEventListener('click', () => this.guardarEstadoUnidadTecnica());
+        }
+
+        // Detectar cambio en selector de unidad técnica para mostrar/ocultar preguntas de Parques y Jardines
+        const selectUnidadTecnica = document.getElementById('modal-unidad-tecnica');
+        if (selectUnidadTecnica) {
+            selectUnidadTecnica.addEventListener('change', (e) => this.manejarCambioUnidadTecnica(e.target.value));
+        }
+
         // Cerrar con ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
@@ -962,10 +1049,15 @@ const ModalDetalle = {
         });
     },
 
-    abrir(solicitudId) {
+    abrir(solicitudId, origenVista = 'funcionario') {
+        console.log('🔍 ModalDetalle.abrir() - ID:', solicitudId, '| Origen:', origenVista);
         const solicitud = APP.solicitudes.find(s => s.id === solicitudId);
-        if (!solicitud) return;
+        if (!solicitud) {
+            console.error('❌ No se encontró solicitud con ID:', solicitudId);
+            return;
+        }
 
+        console.log('✅ Solicitud encontrada:', solicitud);
         this.solicitudActual = solicitud;
 
         // Llenar datos
@@ -975,7 +1067,7 @@ const ModalDetalle = {
         document.getElementById('modal-email').textContent = solicitud.email;
         document.getElementById('modal-telefono').textContent = solicitud.telefono;
         document.getElementById('modal-descripcion').textContent = solicitud.descripcion;
-        document.getElementById('modal-fecha').textContent = FuncionarioView.formatearFecha(solicitud.fechaCreacion);
+        document.getElementById('modal-fecha').textContent = this.formatearFecha(solicitud.fechaCreacion);
         
         // Archivo adjunto
         const archivoContainer = document.getElementById('modal-archivo-container');
@@ -1002,10 +1094,39 @@ const ModalDetalle = {
         }
 
         // Unidad técnica
-        document.getElementById('modal-unidad-tecnica').value = solicitud.unidadTecnica || '';
+        const unidadTecnicaActual = solicitud.unidadTecnica || '';
+        document.getElementById('modal-unidad-tecnica').value = unidadTecnicaActual;
+
+        // Mostrar preguntas de Parques y Jardines si corresponde y cargar valores guardados
+        if (origenVista === 'funcionario') {
+            this.manejarCambioUnidadTecnica(unidadTecnicaActual);
+            
+            // Cargar valores guardados de Parques y Jardines si existen
+            if (unidadTecnicaActual === 'parques-jardines' && solicitud.datosParquesJardines) {
+                document.getElementById('modal-tipo-terreno').value = solicitud.datosParquesJardines.tipoTerreno || '';
+                document.getElementById('modal-tipo-vegetacion').value = solicitud.datosParquesJardines.tipoVegetacion || '';
+                document.getElementById('modal-requiere-camion').value = solicitud.datosParquesJardines.requiereCamion || '';
+            }
+        }
+
+        // Mostrar u ocultar selector de estado de unidad técnica
+        const estadoUTContainer = document.getElementById('modal-estado-ut-container');
+        const estadoUTSelect = document.getElementById('modal-estado-ut');
+        
+        // SOLO mostrar selector de estado si se abre desde Unidad Técnica
+        if (origenVista === 'unidad-tecnica' && solicitud.unidadTecnica && solicitud.unidadTecnica !== '') {
+            estadoUTContainer.classList.remove('hidden');
+            estadoUTSelect.value = solicitud.estadoUnidadTecnica || '';
+            console.log('🏢 Mostrando selector de estado UT (desde Unidad Técnica), estado actual:', solicitud.estadoUnidadTecnica);
+        } else {
+            estadoUTContainer.classList.add('hidden');
+            console.log('👤 Ocultando selector de estado UT (origen:', origenVista, ')');
+        }
 
         // Mostrar modal
-        document.getElementById('modal-detalle').classList.remove('hidden');
+        const modal = document.getElementById('modal-detalle');
+        console.log('📋 Mostrando modal de detalle');
+        modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     },
 
@@ -1015,10 +1136,48 @@ const ModalDetalle = {
         this.solicitudActual = null;
     },
 
+    manejarCambioUnidadTecnica(unidad) {
+        const parquesJardinesContainer = document.getElementById('modal-parques-jardines-container');
+        
+        if (unidad === 'parques-jardines') {
+            parquesJardinesContainer.classList.remove('hidden');
+            console.log('🌳 Mostrando preguntas de Parques y Jardines');
+        } else {
+            parquesJardinesContainer.classList.add('hidden');
+            console.log('👤 Ocultando preguntas de Parques y Jardines');
+        }
+    },
+
     guardarAsignacion() {
         if (!this.solicitudActual) return;
 
         const unidad = document.getElementById('modal-unidad-tecnica').value;
+        
+        // Si es Parques y Jardines, validar y guardar las respuestas adicionales
+        if (unidad === 'parques-jardines') {
+            const tipoTerreno = document.getElementById('modal-tipo-terreno').value;
+            const tipoVegetacion = document.getElementById('modal-tipo-vegetacion').value;
+            const requiereCamion = document.getElementById('modal-requiere-camion').value;
+            
+            // Validar que se hayan respondido todas las preguntas
+            if (!tipoTerreno || !tipoVegetacion || !requiereCamion) {
+                alert('⚠️ Por favor complete todas las preguntas de Parques y Jardines antes de guardar');
+                return;
+            }
+            
+            // Guardar datos adicionales de Parques y Jardines
+            const solicitud = APP.solicitudes.find(s => s.id === this.solicitudActual.id);
+            if (solicitud) {
+                solicitud.datosParquesJardines = {
+                    tipoTerreno,
+                    tipoVegetacion,
+                    requiereCamion
+                };
+                APP.guardarSolicitudes();
+                console.log('🌳 Datos de Parques y Jardines guardados:', solicitud.datosParquesJardines);
+            }
+        }
+        
         APP.asignarUnidadTecnica(this.solicitudActual.id, unidad);
         
         console.log('✅ Unidad técnica asignada:', unidad);
@@ -1026,6 +1185,40 @@ const ModalDetalle = {
         // Actualizar vista y cerrar
         FuncionarioView.actualizar();
         this.cerrar();
+    },
+
+    guardarEstadoUnidadTecnica() {
+        if (!this.solicitudActual) return;
+
+        const estadoUT = document.getElementById('modal-estado-ut').value;
+        
+        if (!estadoUT) {
+            alert('Por favor seleccione un estado');
+            return;
+        }
+
+        APP.cambiarEstadoUnidadTecnica(this.solicitudActual.id, estadoUT);
+        
+        console.log('✅ Estado de unidad técnica actualizado:', estadoUT);
+        
+        // Actualizar vistas
+        FuncionarioView.actualizar();
+        UnidadTecnicaView.actualizar();
+        
+        // Cerrar modal
+        this.cerrar();
+    },
+
+    formatearFecha(fechaISO) {
+        const fecha = new Date(fechaISO);
+        const opciones = {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return fecha.toLocaleDateString('es-CL', opciones);
     }
 };
 

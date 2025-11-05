@@ -29,7 +29,8 @@
     /* Tablas */
     --table-header-bg: rgba(100, 116, 139, 0.1);
     --table-header-text: #94a3b8;
-    --table-row-hover: rgba(100, 116, 139, 0.05);
+    --table-row-hover: rgba(255, 220, 4, 0.08);
+    --table-row-hover-border: rgba(255, 220, 4, 0.2);
     --table-border: rgba(100, 116, 139, 0.2);
 
     /* Formularios */
@@ -98,7 +99,8 @@ html.theme-light {
     /* Tablas */
     --table-header-bg: #f8fafc;
     --table-header-text: #6b7280;
-    --table-row-hover: #f9fafb;
+    --table-row-hover: rgba(255, 220, 4, 0.12);
+    --table-row-hover-border: rgba(255, 220, 4, 0.3);
     --table-border: #e5e7eb;
 
     /* Formularios */
@@ -270,6 +272,25 @@ body {
     color: var(--badge-success-text);
 }
 
+/* Badges de estado de Unidad Técnica */
+.badge-ut-recepcionado {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.badge-ut-finalizado {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-ut-rechazado {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 
 /* ============================================
    BOTONES
@@ -296,14 +317,19 @@ button:disabled,
    TABLA DE SOLICITUDES
    ============================================ */
 
-#tabla-solicitudes-body tr {
-    transition: all 0.2s ease;
+#tabla-solicitudes-body tr,
+#tabla-solicitudes-ut-body tr {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 3px solid transparent;
 }
 
-#tabla-solicitudes-body tr:hover {
+#tabla-solicitudes-body tr:hover,
+#tabla-solicitudes-ut-body tr:hover {
     background: var(--table-row-hover) !important;
-    transform: translateX(2px);
-    box-shadow: var(--shadow-sm);
+    border-left: 3px solid var(--table-row-hover-border);
+    transform: translateX(1px);
+    box-shadow: 0 2px 8px rgba(255, 220, 4, 0.15);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .action-button {
@@ -471,3 +497,24 @@ textarea::placeholder {
 a:hover:not(.tab-button) {
     opacity: 0.9;
 }
+
+/* Filtros */
+.filtro-btn {
+    background: var(--section-bg);
+    border: 1px solid var(--border-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.filtro-btn:hover {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--muni-blue);
+}
+
+.filtro-btn.filtro-activo {
+    background: var(--muni-blue);
+    color: white;
+    border-color: var(--muni-blue);
+}
+
