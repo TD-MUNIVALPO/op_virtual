@@ -3,7 +3,7 @@
    ============================================ */
 
 :root {
-    /* === TEMA OSCURO (default) === */
+    /* === TEMA CLARO (default) === */
 
     /* Colores Corporativos */
     --muni-blue: #294589;
@@ -12,76 +12,6 @@
     --muni-blue-light: #60a5fa;
     --muni-yellow: #ffdc04;
 
-    /* Fondos */
-    --body-bg: #0f172a;
-    --card-bg: #1e293b;
-    --section-bg: #334155;
-
-    /* Textos */
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-
-    /* Bordes */
-    --border-card: rgba(148,163,184,0.2);
-    --border-subtle: rgba(100,116,139,0.25);
-
-    /* Tablas */
-    --table-header-bg: rgba(100, 116, 139, 0.1);
-    --table-header-text: #94a3b8;
-    --table-row-hover: rgba(255, 220, 4, 0.08);
-    --table-row-hover-border: rgba(255, 220, 4, 0.2);
-    --table-border: rgba(100, 116, 139, 0.2);
-
-    /* Formularios */
-    --input-bg: #1e293b;
-    --input-border: #334155;
-    --input-text: #e2e8f0;
-    --input-placeholder: #64748b;
-    --input-focus-border: #3b82f6;
-    --input-focus-ring: rgba(59, 130, 246, 0.3);
-
-    /* Badges de Estado */
-    --badge-success-bg: rgba(148, 163, 184, 0.15);
-    --badge-success-text: #94a3b8;
-    --badge-warning-bg: rgba(148, 163, 184, 0.12);
-    --badge-warning-text: #cbd5e1;
-    --badge-error-bg: rgba(239, 68, 68, 0.15);
-    --badge-error-text: #fca5a5;
-    --badge-info-bg: rgba(100, 116, 139, 0.15);
-    --badge-info-text: #94a3b8;
-    --badge-pending-bg: rgba(100, 116, 139, 0.15);
-    --badge-pending-text: #94a3b8;
-
-    /* Alertas */
-    --alert-success-bg: rgba(34, 197, 94, 0.15);
-    --alert-success-border: rgba(34, 197, 94, 0.3);
-    --alert-success-text: #86efac;
-    --alert-error-bg: rgba(239, 68, 68, 0.15);
-    --alert-error-border: rgba(239, 68, 68, 0.3);
-    --alert-error-text: #fca5a5;
-
-    /* Botones */
-    --btn-primary-bg: #3b82f6;
-    --btn-primary-hover: #2563eb;
-    --btn-secondary-bg: #64748b;
-    --btn-secondary-hover: #475569;
-    --btn-success-bg: #475569;
-    --btn-success-hover: #334155;
-    --btn-danger-bg: #ef4444;
-    --btn-danger-hover: #dc2626;
-    --btn-warning-bg: #64748b;
-    --btn-warning-hover: #475569;
-
-    /* Sombras */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-}
-
-/* === TEMA CLARO === */
-html.theme-light {
     /* Fondos */
     --body-bg: #ffffff;
     --card-bg: #f8fafc;
@@ -131,6 +61,18 @@ html.theme-light {
     --alert-error-border: #fca5a5;
     --alert-error-text: #991b1b;
 
+    /* Botones */
+    --btn-primary-bg: #3b82f6;
+    --btn-primary-hover: #2563eb;
+    --btn-secondary-bg: #64748b;
+    --btn-secondary-hover: #475569;
+    --btn-success-bg: #475569;
+    --btn-success-hover: #334155;
+    --btn-danger-bg: #ef4444;
+    --btn-danger-hover: #dc2626;
+    --btn-warning-bg: #64748b;
+    --btn-warning-hover: #475569;
+
     /* Sombras */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -139,22 +81,20 @@ html.theme-light {
 }
 
 
+
+
 /* ============================================
    HEADER TEMAS
    ============================================ */
 
 /* Header tema oscuro (default) */
 .header-principal {
-    background: rgba(11, 36, 71, 0.15) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #ffffff !important;
 }
 
 /* Header tema claro */
 html.theme-light .header-principal {
-    background: rgba(59, 130, 246, 0.1) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #ffffff !important;
 }
 
 html.theme-light .header-principal h1 {
@@ -272,11 +212,23 @@ body {
     color: var(--badge-success-text);
 }
 
+.badge-derivacion-pendiente {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-derivado {
+    background: rgba(147, 51, 234, 0.15);
+    color: #9333ea;
+    border: 1px solid rgba(147, 51, 234, 0.3);
+}
+
 /* Badges de estado de Unidad Técnica */
-.badge-ut-recepcionado {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+.badge-ut-en-ejecucion {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
+    border: 1px solid rgba(251, 146, 60, 0.3);
 }
 
 .badge-ut-finalizado {

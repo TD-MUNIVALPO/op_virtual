@@ -29,9 +29,11 @@ const APP = {
 
     // Generar ID único
     generarId() {
-        const timestamp = Date.now();
-        const random = Math.floor(Math.random() * 1000);
-        return `OP-${timestamp}-${random}`;
+        const year = new Date().getFullYear().toString().slice(-2); // Últimos 2 dígitos del año
+        const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+        const day = new Date().getDate().toString().padStart(2, '0');
+        const random = Math.floor(Math.random() * 999) + 1; // 1-999
+        return `${year}${month}${day}-${random.toString().padStart(3, '0')}`;
     },
 
     // Agregar nueva solicitud
@@ -71,7 +73,7 @@ const APP = {
         return false;
     },
 
-    // Cambiar estado de unidad técnica (recepcionado, finalizado, rechazado)
+    // Cambiar estado de unidad técnica (en-ejecucion, finalizado, rechazado)
     cambiarEstadoUnidadTecnica(id, estadoUT) {
         const solicitud = this.solicitudes.find(s => s.id === id);
         if (solicitud) {
@@ -96,79 +98,14 @@ const APP = {
 };
 
 
-// ============================================
-// 2. GESTIÓN DE TEMAS
-// ============================================
 
-const ThemeManager = {
-    init() {
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const html = document.documentElement;
-
-        if (!themeToggle || !themeIcon) return;
-
-        // Cargar tema guardado
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'light') {
-            html.classList.add('theme-light');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-
-        // Toggle de tema
-        themeToggle.addEventListener('click', () => {
-            const isLight = html.classList.toggle('theme-light');
-
-            if (isLight) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                localStorage.setItem('theme', 'light');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-    }
-};
 
 
 // ============================================
 // 2B. RELOJ DEL HEADER
 // ============================================
 
-const HeaderClock = {
-    init() {
-        this.actualizarFechaHora();
-        // Actualizar cada segundo
-        setInterval(() => this.actualizarFechaHora(), 1000);
-    },
 
-    actualizarFechaHora() {
-        const ahora = new Date();
-        
-        // Fecha
-        const fecha = ahora.toLocaleDateString('es-CL', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-        
-        // Hora
-        const hora = ahora.toLocaleTimeString('es-CL', {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-
-        const elementoFecha = document.getElementById('header-fecha');
-        const elementoHora = document.getElementById('header-hora');
-
-        if (elementoFecha) elementoFecha.textContent = fecha;
-        if (elementoHora) elementoHora.textContent = hora;
-    }
-};
 
 
 // ============================================
@@ -178,14 +115,36 @@ const HeaderClock = {
 const TabManager = {
     init() {
         const tabCiudadano = document.getElementById('tab-ciudadano');
+        const tabFuncionarioForm = document.getElementById('tab-funcionario-form');
+        const tabFuncionarioEspecifico = document.getElementById('tab-funcionario-especifico');
         const tabFuncionario = document.getElementById('tab-funcionario');
         const tabUnidadTecnica = document.getElementById('tab-unidad-tecnica');
         const vistaCiudadano = document.getElementById('vista-ciudadano');
+        const vistaFuncionarioForm = document.getElementById('vista-funcionario-form');
+        const vistaFuncionarioEspecifico = document.getElementById('vista-funcionario-especifico');
         const vistaFuncionario = document.getElementById('vista-funcionario');
         const vistaUnidadTecnica = document.getElementById('vista-unidad-tecnica');
 
         tabCiudadano.addEventListener('click', () => {
             this.activarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
+            this.desactivarTab(tabFuncionario, vistaFuncionario);
+            this.desactivarTab(tabUnidadTecnica, vistaUnidadTecnica);
+        });
+
+        tabFuncionarioForm.addEventListener('click', () => {
+            this.activarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
+            this.desactivarTab(tabFuncionario, vistaFuncionario);
+            this.desactivarTab(tabUnidadTecnica, vistaUnidadTecnica);
+        });
+
+        tabFuncionarioEspecifico.addEventListener('click', () => {
+            this.activarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
+            this.desactivarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
             this.desactivarTab(tabFuncionario, vistaFuncionario);
             this.desactivarTab(tabUnidadTecnica, vistaUnidadTecnica);
         });
@@ -193,6 +152,8 @@ const TabManager = {
         tabFuncionario.addEventListener('click', () => {
             this.activarTab(tabFuncionario, vistaFuncionario);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
             this.desactivarTab(tabUnidadTecnica, vistaUnidadTecnica);
             FuncionarioView.actualizar();
         });
@@ -200,6 +161,8 @@ const TabManager = {
         tabUnidadTecnica.addEventListener('click', () => {
             this.activarTab(tabUnidadTecnica, vistaUnidadTecnica);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
             this.desactivarTab(tabFuncionario, vistaFuncionario);
             UnidadTecnicaView.actualizar();
         });
@@ -218,7 +181,76 @@ const TabManager = {
 
 
 // ============================================
-// 4. VALIDACIONES
+// 4. UTILIDADES GLOBALES - ESTADOS
+// ============================================
+
+const EstadosUtil = {
+    // Mapeo de unidades técnicas a nombres legibles
+    unidadesNombres: {
+        'desarrollo-economico': 'Desarrollo Económico',
+        'dat': 'DAT',
+        'parques-jardines': 'Parques y Jardines',
+        'alumbrado-publico': 'Alumbrado Público',
+        'fiscalizacion': 'Fiscalización',
+        'transito': 'Tránsito',
+        'patentes-comerciales': 'Patentes Comerciales'
+    },
+
+    // Función unificada para crear badges de estado
+    crearBadgeEstado(solicitud) {
+        const estado = solicitud.estado;
+        const unidadTecnica = solicitud.unidadTecnica;
+        const estadoUT = solicitud.estadoUnidadTecnica;
+        
+        // Si tiene estado de unidad técnica, mostrarlo prioritariamente
+        if (estadoUT) {
+            const nombreUnidad = this.unidadesNombres[unidadTecnica] || unidadTecnica;
+            const estadosUT = {
+                'en-ejecucion': `<span class="badge badge-ut-en-ejecucion"><i class="fas fa-cog mr-1"></i>En ejecución - ${nombreUnidad}</span>`,
+                'finalizado': `<span class="badge badge-ut-finalizado"><i class="fas fa-check-circle mr-1"></i>Finalizado - ${nombreUnidad}</span>`,
+                'rechazado': `<span class="badge badge-ut-rechazado"><i class="fas fa-times-circle mr-1"></i>Rechazado - ${nombreUnidad}</span>`
+            };
+            return estadosUT[estadoUT] || estadosUT['en-ejecucion'];
+        }
+        
+        // Si tiene unidad técnica asignada pero no tiene estado UT, mostrar derivación
+        if (unidadTecnica && unidadTecnica !== '') {
+            const nombreUnidad = this.unidadesNombres[unidadTecnica] || unidadTecnica;
+            return `<span class="badge badge-derivado"><i class="fas fa-share mr-1"></i>Derivado a: ${nombreUnidad}</span>`;
+        }
+        
+        // Si no tiene unidad técnica, mostrar estado normal
+        const badges = {
+            'pendiente': '<span class="badge badge-derivacion-pendiente"><i class="fas fa-clock mr-1"></i>Derivación pendiente según</span>',
+            'revision': '<span class="badge badge-revision"><i class="fas fa-spinner mr-1"></i>En Revisión</span>',
+            'finalizada': '<span class="badge badge-finalizada"><i class="fas fa-check mr-1"></i>Finalizada</span>'
+        };
+        return badges[estado] || badges.pendiente;
+    },
+
+    // Función para calcular días que lleva abierto un requerimiento
+    calcularDiasAbierto(fechaCreacion) {
+        const fechaCreacionDate = new Date(fechaCreacion);
+        const ahora = new Date();
+        const diferenciaTiempo = ahora - fechaCreacionDate;
+        const dias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
+        
+        if (dias === 0) {
+            return '<span class="text-sm font-medium" style="color: var(--text-primary);">Hoy</span>';
+        } else if (dias === 1) {
+            return '<span class="text-sm font-medium" style="color: var(--text-secondary);">1 día</span>';
+        } else if (dias <= 7) {
+            return `<span class="text-sm font-medium" style="color: var(--text-secondary);">${dias} días</span>`;
+        } else if (dias <= 30) {
+            return `<span class="text-sm font-medium" style="color: #f59e0b;">${dias} días</span>`;
+        } else {
+            return `<span class="text-sm font-medium" style="color: #ef4444;">${dias} días</span>`;
+        }
+    }
+};
+
+// ============================================
+// 5. VALIDACIONES
 // ============================================
 
 const Validaciones = {
@@ -317,7 +349,7 @@ const FormularioCiudadano = {
     },
 
     agregarValidacionTiempoReal() {
-        const campos = ['nombre', 'rut', 'nombre-social', 'fecha-nacimiento', 'genero', 'email', 'email2', 'telefono', 'telefono2', 'direccion', 'descripcion'];
+        const campos = ['nombre', 'apellido', 'rut', 'nombre-social', 'fecha-nacimiento', 'genero', 'email', 'email2', 'telefono', 'telefono2', 'direccion', 'titulo', 'descripcion'];
 
         campos.forEach(campoId => {
             const campo = document.getElementById(campoId);
@@ -344,10 +376,18 @@ const FormularioCiudadano = {
         if (campo.id === 'nombre') {
             if (!Validaciones.validarRequerido(valor)) {
                 esValido = false;
-                mensaje = 'El nombre es obligatorio';
-            } else if (valor.trim().length < 3) {
+                mensaje = 'Los nombres son obligatorios';
+            } else if (valor.trim().length < 2) {
                 esValido = false;
-                mensaje = 'El nombre debe tener al menos 3 caracteres';
+                mensaje = 'Los nombres deben tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'apellido') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Los apellidos son obligatorios';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'Los apellidos deben tener al menos 2 caracteres';
             }
         } else if (campo.id === 'rut') {
             if (!Validaciones.validarRequerido(valor)) {
@@ -373,6 +413,14 @@ const FormularioCiudadano = {
                 esValido = false;
                 mensaje = 'Teléfono inválido (mínimo 8 dígitos)';
             }
+        } else if (campo.id === 'titulo') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El título es obligatorio';
+            } else if (valor.trim().length < 5) {
+                esValido = false;
+                mensaje = 'El título debe tener al menos 5 caracteres';
+            }
         } else if (campo.id === 'descripcion') {
             if (!Validaciones.validarRequerido(valor)) {
                 esValido = false;
@@ -393,7 +441,7 @@ const FormularioCiudadano = {
     },
 
     validarFormulario() {
-        const campos = ['nombre', 'rut', 'fecha-nacimiento', 'genero', 'email', 'telefono', 'direccion', 'descripcion'];
+        const campos = ['nombre', 'apellido', 'rut', 'fecha-nacimiento', 'genero', 'email', 'telefono', 'direccion', 'titulo', 'descripcion'];
         let formularioValido = true;
 
         campos.forEach(campoId => {
@@ -429,7 +477,7 @@ const FormularioCiudadano = {
 
         // Recoger datos
         const datos = {
-            nombre: document.getElementById('nombre').value.trim(),
+            nombre: document.getElementById('nombre').value.trim() + ' ' + document.getElementById('apellido').value.trim(),
             nombreSocial: document.getElementById('nombre-social').value.trim() || null,
             rut: document.getElementById('rut').value.trim(),
             fechaNacimiento: document.getElementById('fecha-nacimiento').value,
@@ -439,6 +487,7 @@ const FormularioCiudadano = {
             telefono: document.getElementById('telefono').value.trim(),
             telefono2: document.getElementById('telefono2').value.trim() || null,
             direccion: document.getElementById('direccion').value.trim(),
+            titulo: document.getElementById('titulo').value.trim(),
             descripcion: document.getElementById('descripcion').value.trim(),
             archivoNombre: inputArchivo.files.length > 0 ? inputArchivo.files[0].name : null
         };
@@ -498,7 +547,14 @@ const FormularioCiudadano = {
 
 // Función global para actualizar el nombre del archivo
 function actualizarNombreArchivo(input) {
-    const nombreArchivo = document.getElementById('nombre-archivo');
+    let targetId = 'nombre-archivo';
+    if (input.id === 'archivo-func') {
+        targetId = 'nombre-archivo-func';
+    } else if (input.id === 'archivo-esp') {
+        targetId = 'nombre-archivo-esp';
+    }
+    
+    const nombreArchivo = document.getElementById(targetId);
     if (input.files.length > 0) {
         const archivo = input.files[0];
         nombreArchivo.textContent = archivo.name;
@@ -514,6 +570,468 @@ function actualizarNombreArchivo(input) {
         nombreArchivo.textContent = 'Seleccionar archivo...';
     }
 }
+
+
+// ============================================
+// 5C. FORMULARIO DE SOLICITUD (FUNCIONARIO)
+// ============================================
+
+const FormularioFuncionario = {
+    init() {
+        const form = document.getElementById('solicitud-form-func');
+        const btnLimpiar = document.getElementById('btn-limpiar-func');
+        const btnNuevaSolicitud = document.getElementById('btn-nueva-solicitud-func');
+
+        // Submit del formulario
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.enviarSolicitud();
+        });
+
+        // Botón limpiar
+        btnLimpiar.addEventListener('click', () => {
+            this.limpiarFormulario();
+        });
+
+        // Botón nueva solicitud
+        btnNuevaSolicitud.addEventListener('click', () => {
+            this.ocultarResumen();
+            this.limpiarFormulario();
+        });
+
+        // Validación en tiempo real
+        this.agregarValidacionTiempoReal();
+    },
+
+    agregarValidacionTiempoReal() {
+        const campos = ['nombre-func', 'apellido-func', 'rut-func', 'nombre-social-func', 'fecha-nacimiento-func', 'genero-func', 'email-func', 'email2-func', 'telefono-func', 'telefono2-func', 'direccion-func', 'titulo-func', 'descripcion-func'];
+
+        campos.forEach(campoId => {
+            const campo = document.getElementById(campoId);
+            if (campo) {
+                campo.addEventListener('blur', () => {
+                    this.validarCampo(campo);
+                });
+
+                campo.addEventListener('input', () => {
+                    if (campo.classList.contains('border-red-500')) {
+                        Validaciones.limpiarError(campo);
+                    }
+                });
+            }
+        });
+    },
+
+    validarCampo(campo) {
+        const valor = campo.value;
+        let esValido = true;
+        let mensaje = '';
+
+        // Validar según el tipo de campo
+        if (campo.id === 'nombre-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Los nombres son obligatorios';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'Los nombres deben tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'apellido-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Los apellidos son obligatorios';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'Los apellidos deben tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'rut-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El RUT es obligatorio';
+            } else if (!Validaciones.validarRUT(valor)) {
+                esValido = false;
+                mensaje = 'RUT inválido (formato: 12.345.678-9)';
+            }
+        } else if (campo.id === 'email-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El correo es obligatorio';
+            } else if (!Validaciones.validarEmail(valor)) {
+                esValido = false;
+                mensaje = 'Correo electrónico inválido';
+            }
+        } else if (campo.id === 'telefono-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El teléfono es obligatorio';
+            } else if (!Validaciones.validarTelefono(valor)) {
+                esValido = false;
+                mensaje = 'Teléfono inválido (mínimo 8 dígitos)';
+            }
+        } else if (campo.id === 'titulo-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El título es obligatorio';
+            } else if (valor.trim().length < 5) {
+                esValido = false;
+                mensaje = 'El título debe tener al menos 5 caracteres';
+            }
+        } else if (campo.id === 'descripcion-func') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'La descripción es obligatoria';
+            } else if (valor.trim().length < 10) {
+                esValido = false;
+                mensaje = 'La descripción debe tener al menos 10 caracteres';
+            }
+        }
+
+        if (!esValido) {
+            Validaciones.mostrarError(campo, mensaje);
+        } else {
+            Validaciones.limpiarError(campo);
+        }
+
+        return esValido;
+    },
+
+    validarFormulario() {
+        const campos = ['nombre-func', 'apellido-func', 'rut-func', 'fecha-nacimiento-func', 'genero-func', 'email-func', 'telefono-func', 'direccion-func', 'titulo-func', 'descripcion-func'];
+        let formularioValido = true;
+
+        campos.forEach(campoId => {
+            const campo = document.getElementById(campoId);
+            if (campo && !this.validarCampo(campo)) {
+                formularioValido = false;
+            }
+        });
+
+        return formularioValido;
+    },
+
+    enviarSolicitud() {
+        // Limpiar errores previos
+        Validaciones.limpiarTodosErrores();
+
+        // Validar formulario
+        if (!this.validarFormulario()) {
+            return;
+        }
+
+        // Validar archivo si existe
+        const inputArchivo = document.getElementById('archivo-func');
+        if (inputArchivo.files.length > 0) {
+            const archivo = inputArchivo.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            
+            if (archivo.size > maxSize) {
+                Validaciones.mostrarError(inputArchivo, 'El archivo no debe superar los 5MB');
+                return;
+            }
+        }
+
+        // Recoger datos
+        const datos = {
+            nombre: document.getElementById('nombre-func').value.trim() + ' ' + document.getElementById('apellido-func').value.trim(),
+            nombreSocial: document.getElementById('nombre-social-func').value.trim() || null,
+            rut: document.getElementById('rut-func').value.trim(),
+            fechaNacimiento: document.getElementById('fecha-nacimiento-func').value,
+            genero: document.getElementById('genero-func').value,
+            email: document.getElementById('email-func').value.trim(),
+            email2: document.getElementById('email2-func').value.trim() || null,
+            telefono: document.getElementById('telefono-func').value.trim(),
+            telefono2: document.getElementById('telefono2-func').value.trim() || null,
+            direccion: document.getElementById('direccion-func').value.trim(),
+            titulo: document.getElementById('titulo-func').value.trim(),
+            descripcion: document.getElementById('descripcion-func').value.trim(),
+            archivoNombre: inputArchivo.files.length > 0 ? inputArchivo.files[0].name : null
+        };
+
+        // Agregar solicitud
+        const solicitud = APP.agregarSolicitud(datos);
+
+        // Mostrar resumen
+        this.mostrarResumen(solicitud);
+
+        // Scroll al resumen
+        document.getElementById('resumen-solicitud-func').scrollIntoView({ behavior: 'smooth' });
+    },
+
+    mostrarResumen(solicitud) {
+        // Ocultar formulario
+        document.getElementById('solicitud-form-func').parentElement.parentElement.style.display = 'none';
+
+        // Mostrar resumen
+        const resumen = document.getElementById('resumen-solicitud-func');
+        resumen.classList.remove('hidden');
+
+        // Llenar datos
+        document.getElementById('numero-seguimiento-func').textContent = solicitud.id;
+        document.getElementById('resumen-nombre-func').textContent = solicitud.nombre;
+        document.getElementById('resumen-rut-func').textContent = solicitud.rut;
+        document.getElementById('resumen-email-func').textContent = solicitud.email;
+        document.getElementById('resumen-telefono-func').textContent = solicitud.telefono;
+        document.getElementById('resumen-descripcion-func').textContent = solicitud.descripcion;
+    },
+
+    ocultarResumen() {
+        // Mostrar formulario
+        document.getElementById('solicitud-form-func').parentElement.parentElement.style.display = 'block';
+
+        // Ocultar resumen
+        document.getElementById('resumen-solicitud-func').classList.add('hidden');
+    },
+
+    limpiarFormulario() {
+        document.getElementById('solicitud-form-func').reset();
+        
+        // Limpiar nombre del archivo
+        const nombreArchivo = document.getElementById('nombre-archivo-func');
+        if (nombreArchivo) {
+            nombreArchivo.textContent = 'Seleccionar archivo...';
+        }
+        
+        Validaciones.limpiarTodosErrores();
+    }
+};
+
+
+// ============================================
+// 5D. FORMULARIO DE SOLICITUD ESPECÍFICO (FUNCIONARIO)
+// ============================================
+
+const FormularioFuncionarioEspecifico = {
+    init() {
+        const form = document.getElementById('solicitud-form-esp');
+        const btnLimpiar = document.getElementById('btn-limpiar-esp');
+        const btnNuevaSolicitud = document.getElementById('btn-nueva-solicitud-esp');
+
+        // Submit del formulario
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.enviarSolicitud();
+        });
+
+        // Botón limpiar
+        btnLimpiar.addEventListener('click', () => {
+            this.limpiarFormulario();
+        });
+
+        // Botón nueva solicitud
+        btnNuevaSolicitud.addEventListener('click', () => {
+            this.ocultarResumen();
+            this.limpiarFormulario();
+        });
+
+        // Validación en tiempo real
+        this.agregarValidacionTiempoReal();
+    },
+
+    agregarValidacionTiempoReal() {
+        const campos = ['nombre-esp', 'apellido-esp', 'rut-esp', 'nombre-social-esp', 'fecha-nacimiento-esp', 'genero-esp', 'email-esp', 'email2-esp', 'telefono-esp', 'telefono2-esp', 'direccion-esp', 'titulo-esp', 'descripcion-esp', 'tipo-terreno', 'informe-social', 'retiro-escombros'];
+
+        campos.forEach(campoId => {
+            const campo = document.getElementById(campoId);
+            if (campo) {
+                campo.addEventListener('blur', () => {
+                    this.validarCampo(campo);
+                });
+
+                campo.addEventListener('input', () => {
+                    if (campo.classList.contains('border-red-500')) {
+                        Validaciones.limpiarError(campo);
+                    }
+                });
+            }
+        });
+    },
+
+    validarCampo(campo) {
+        const valor = campo.value;
+        let esValido = true;
+        let mensaje = '';
+
+        // Validar según el tipo de campo
+        if (campo.id === 'nombre-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Los nombres son obligatorios';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'Los nombres deben tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'apellido-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Los apellidos son obligatorios';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'Los apellidos deben tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'rut-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El RUT es obligatorio';
+            } else if (!Validaciones.validarRUT(valor)) {
+                esValido = false;
+                mensaje = 'RUT inválido (formato: 12.345.678-9)';
+            }
+        } else if (campo.id === 'email-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El correo es obligatorio';
+            } else if (!Validaciones.validarEmail(valor)) {
+                esValido = false;
+                mensaje = 'Correo electrónico inválido';
+            }
+        } else if (campo.id === 'telefono-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El teléfono es obligatorio';
+            } else if (!Validaciones.validarTelefono(valor)) {
+                esValido = false;
+                mensaje = 'Teléfono inválido (mínimo 8 dígitos)';
+            }
+        } else if (campo.id === 'titulo-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El título es obligatorio';
+            } else if (valor.trim().length < 5) {
+                esValido = false;
+                mensaje = 'El título debe tener al menos 5 caracteres';
+            }
+        } else if (campo.id === 'descripcion-esp') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'La descripción es obligatoria';
+            } else if (valor.trim().length < 10) {
+                esValido = false;
+                mensaje = 'La descripción debe tener al menos 10 caracteres';
+            }
+        } else if (campo.id === 'tipo-terreno' || campo.id === 'informe-social' || campo.id === 'retiro-escombros') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'Este campo es obligatorio';
+            }
+        }
+
+        if (!esValido) {
+            Validaciones.mostrarError(campo, mensaje);
+        } else {
+            Validaciones.limpiarError(campo);
+        }
+
+        return esValido;
+    },
+
+    validarFormulario() {
+        const campos = ['nombre-esp', 'apellido-esp', 'rut-esp', 'fecha-nacimiento-esp', 'genero-esp', 'email-esp', 'telefono-esp', 'direccion-esp', 'titulo-esp', 'descripcion-esp', 'tipo-terreno', 'informe-social', 'retiro-escombros'];
+        let formularioValido = true;
+
+        campos.forEach(campoId => {
+            const campo = document.getElementById(campoId);
+            if (campo && !this.validarCampo(campo)) {
+                formularioValido = false;
+            }
+        });
+
+        return formularioValido;
+    },
+
+    enviarSolicitud() {
+        // Limpiar errores previos
+        Validaciones.limpiarTodosErrores();
+
+        // Validar formulario
+        if (!this.validarFormulario()) {
+            return;
+        }
+
+        // Validar archivo si existe
+        const inputArchivo = document.getElementById('archivo-esp');
+        if (inputArchivo.files.length > 0) {
+            const archivo = inputArchivo.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            
+            if (archivo.size > maxSize) {
+                Validaciones.mostrarError(inputArchivo, 'El archivo no debe superar los 5MB');
+                return;
+            }
+        }
+
+        // Recoger datos
+        const datos = {
+            nombre: document.getElementById('nombre-esp').value.trim() + ' ' + document.getElementById('apellido-esp').value.trim(),
+            nombreSocial: document.getElementById('nombre-social-esp').value.trim() || null,
+            rut: document.getElementById('rut-esp').value.trim(),
+            fechaNacimiento: document.getElementById('fecha-nacimiento-esp').value,
+            genero: document.getElementById('genero-esp').value,
+            email: document.getElementById('email-esp').value.trim(),
+            email2: document.getElementById('email2-esp').value.trim() || null,
+            telefono: document.getElementById('telefono-esp').value.trim(),
+            telefono2: document.getElementById('telefono2-esp').value.trim() || null,
+            direccion: document.getElementById('direccion-esp').value.trim(),
+            titulo: document.getElementById('titulo-esp').value.trim(),
+            descripcion: document.getElementById('descripcion-esp').value.trim(),
+            archivoNombre: inputArchivo.files.length > 0 ? inputArchivo.files[0].name : null,
+            // Campos específicos
+            tipoTerreno: document.getElementById('tipo-terreno').value,
+            informeSocial: document.getElementById('informe-social').value,
+            retiroEscombros: document.getElementById('retiro-escombros').value
+        };
+
+        // Agregar solicitud
+        const solicitud = APP.agregarSolicitud(datos);
+
+        // Mostrar resumen
+        this.mostrarResumen(solicitud);
+
+        // Scroll al resumen
+        document.getElementById('resumen-solicitud-esp').scrollIntoView({ behavior: 'smooth' });
+    },
+
+    mostrarResumen(solicitud) {
+        // Ocultar formulario
+        document.getElementById('solicitud-form-esp').parentElement.parentElement.style.display = 'none';
+
+        // Mostrar resumen
+        const resumen = document.getElementById('resumen-solicitud-esp');
+        resumen.classList.remove('hidden');
+
+        // Llenar datos
+        document.getElementById('numero-seguimiento-esp').textContent = solicitud.id;
+        document.getElementById('resumen-nombre-esp').textContent = solicitud.nombre;
+        document.getElementById('resumen-rut-esp').textContent = solicitud.rut;
+        document.getElementById('resumen-email-esp').textContent = solicitud.email;
+        document.getElementById('resumen-telefono-esp').textContent = solicitud.telefono;
+        document.getElementById('resumen-descripcion-esp').textContent = solicitud.descripcion;
+        
+        // Campos específicos
+        document.getElementById('resumen-tipo-terreno').textContent = solicitud.tipoTerreno === 'privado' ? 'Terreno Privado' : 'Terreno Público';
+        document.getElementById('resumen-informe-social').textContent = solicitud.informeSocial === 'si' ? 'Sí' : 'No';
+        document.getElementById('resumen-retiro-escombros').textContent = solicitud.retiroEscombros === 'si' ? 'Sí' : 'No';
+    },
+
+    ocultarResumen() {
+        // Mostrar formulario
+        document.getElementById('solicitud-form-esp').parentElement.parentElement.style.display = 'block';
+
+        // Ocultar resumen
+        document.getElementById('resumen-solicitud-esp').classList.add('hidden');
+    },
+
+    limpiarFormulario() {
+        document.getElementById('solicitud-form-esp').reset();
+        
+        // Limpiar nombre del archivo
+        const nombreArchivo = document.getElementById('nombre-archivo-esp');
+        if (nombreArchivo) {
+            nombreArchivo.textContent = 'Seleccionar archivo...';
+        }
+        
+        Validaciones.limpiarTodosErrores();
+    }
+};
 
 
 // ============================================
@@ -675,10 +1193,31 @@ const FuncionarioView = {
         tdEstado.className = 'px-6 py-4';
         tdEstado.innerHTML = this.crearBadgeEstado(solicitud);
 
-        // Columna Acciones
-        const tdAcciones = document.createElement('td');
-        tdAcciones.className = 'px-6 py-4 text-center';
-        tdAcciones.innerHTML = this.crearBotonesAccion(solicitud);
+        // Columna Días Abierto
+        const tdDiasAbierto = document.createElement('td');
+        tdDiasAbierto.className = 'px-6 py-4';
+        
+        // Crear contenedor flex para días + botón
+        const diasContainer = document.createElement('div');
+        diasContainer.className = 'flex items-center justify-center gap-2';
+        
+        // Badge de días
+        const diasBadge = document.createElement('span');
+        diasBadge.innerHTML = EstadosUtil.calcularDiasAbierto(solicitud.fechaCreacion);
+        
+        // Botón de notificación
+        const btnNotificar = document.createElement('button');
+        btnNotificar.className = 'p-1.5 rounded-lg transition-colors hover:bg-blue-100';
+        btnNotificar.innerHTML = '<i class="fas fa-envelope text-blue-600 text-sm"></i>';
+        btnNotificar.title = 'Enviar recordatorio';
+        btnNotificar.onclick = (e) => {
+            e.stopPropagation();
+            this.confirmarEnvioRecordatorio(solicitud);
+        };
+        
+        diasContainer.appendChild(diasBadge);
+        diasContainer.appendChild(btnNotificar);
+        tdDiasAbierto.appendChild(diasContainer);
 
         // Agregar columnas a la fila
         tr.appendChild(tdId);
@@ -686,96 +1225,13 @@ const FuncionarioView = {
         tr.appendChild(tdContacto);
         tr.appendChild(tdDescripcion);
         tr.appendChild(tdEstado);
-        tr.appendChild(tdAcciones);
-
-        // Event listeners para los botones
-        this.agregarEventListenersAcciones(tr, solicitud);
+        tr.appendChild(tdDiasAbierto);
 
         return tr;
     },
 
     crearBadgeEstado(solicitud) {
-        const estado = solicitud.estado;
-        const unidadTecnica = solicitud.unidadTecnica;
-        const estadoUT = solicitud.estadoUnidadTecnica;
-        
-        // Mapeo de valores a nombres legibles
-        const unidadesNombres = {
-            'desarrollo-economico': 'Desarrollo Económico',
-            'dat': 'DAT',
-            'parques-jardines': 'Parques y Jardines',
-            'alumbrado-publico': 'Alumbrado Público',
-            'fiscalizacion': 'Fiscalización',
-            'transito': 'Tránsito',
-            'patentes-comerciales': 'Patentes Comerciales'
-        };
-        
-        // Si tiene estado de unidad técnica, mostrarlo prioritariamente
-        if (estadoUT) {
-            const estadosUT = {
-                'recepcionado': '<span class="badge badge-ut-recepcionado"><i class="fas fa-inbox mr-1"></i>Recepcionado</span>',
-                'finalizado': '<span class="badge badge-ut-finalizado"><i class="fas fa-check-circle mr-1"></i>Finalizado por UT</span>',
-                'rechazado': '<span class="badge badge-ut-rechazado"><i class="fas fa-times-circle mr-1"></i>Rechazado</span>'
-            };
-            return estadosUT[estadoUT] || estadosUT.recepcionado;
-        }
-        
-        // Si tiene unidad técnica asignada pero no tiene estado UT, mostrar derivación
-        if (unidadTecnica && unidadTecnica !== '') {
-            const nombreUnidad = unidadesNombres[unidadTecnica] || unidadTecnica;
-            return `<span class="badge badge-revision"><i class="fas fa-share mr-1"></i>Derivado a: ${nombreUnidad}</span>`;
-        }
-        
-        // Si no tiene unidad técnica, mostrar estado normal
-        const badges = {
-            'pendiente': '<span class="badge badge-pendiente"><i class="fas fa-clock mr-1"></i>Derivación pendiente</span>',
-            'revision': '<span class="badge badge-revision"><i class="fas fa-spinner mr-1"></i>En Revisión</span>',
-            'finalizada': '<span class="badge badge-finalizada"><i class="fas fa-check mr-1"></i>Finalizada</span>'
-        };
-        return badges[estado] || badges.pendiente;
-    },
-
-    crearBotonesAccion(solicitud) {
-        if (solicitud.estado === 'pendiente') {
-            return `
-                <button class="action-button action-button-revision" data-action="revision" data-id="${solicitud.id}">
-                    <i class="fas fa-eye"></i>
-                    <span>Revisar</span>
-                </button>
-            `;
-        } else if (solicitud.estado === 'revision') {
-            return `
-                <button class="action-button action-button-finalizar" data-action="finalizar" data-id="${solicitud.id}">
-                    <i class="fas fa-check"></i>
-                    <span>Finalizar</span>
-                </button>
-            `;
-        } else {
-            return `
-                <span class="text-sm" style="color: var(--text-muted);">
-                    <i class="fas fa-check-circle"></i> Completada
-                </span>
-            `;
-        }
-    },
-
-    agregarEventListenersAcciones(fila, solicitud) {
-        const botones = fila.querySelectorAll('.action-button');
-
-        botones.forEach(boton => {
-            boton.addEventListener('click', () => {
-                const accion = boton.getAttribute('data-action');
-                const id = boton.getAttribute('data-id');
-
-                if (accion === 'revision') {
-                    APP.cambiarEstado(id, 'revision');
-                    this.actualizar();
-                } else if (accion === 'finalizar') {
-                    APP.cambiarEstado(id, 'finalizada');
-                    this.actualizar();
-                }
-            });
-        });
+        return EstadosUtil.crearBadgeEstado(solicitud);
     },
 
     formatearFecha(fechaISO) {
@@ -788,6 +1244,39 @@ const FuncionarioView = {
             minute: '2-digit'
         };
         return fecha.toLocaleDateString('es-CL', opciones);
+    },
+
+    confirmarEnvioRecordatorio(solicitud) {
+        // Calcular días abiertos
+        const diasAbiertos = Math.floor((Date.now() - new Date(solicitud.fechaCreacion).getTime()) / (1000 * 60 * 60 * 24));
+        
+        // Crear modal de confirmación personalizado
+        const confirmacion = confirm(
+            `¿Estás seguro que quieres enviar un recordatorio?\n\n` +
+            `Solicitud: ${solicitud.id}\n` +
+            `Ciudadano: ${solicitud.nombre}\n` +
+            `Días abiertos: ${diasAbiertos}\n\n` +
+            `Se notificará que esta solicitud está con retraso.`
+        );
+        
+        if (confirmacion) {
+            this.enviarRecordatorio(solicitud);
+        }
+    },
+
+    enviarRecordatorio(solicitud) {
+        // Simular envío de recordatorio
+        console.log('📧 Enviando recordatorio para solicitud:', solicitud.id);
+        
+        // Mostrar mensaje de éxito
+        alert(
+            `✅ Recordatorio enviado exitosamente\n\n` +
+            `Solicitud: ${solicitud.id}\n` +
+            `Se ha notificado sobre el retraso de esta solicitud.`
+        );
+        
+        // Aquí se podría agregar la lógica real de envío de email
+        // Por ejemplo, llamar a una API del backend
     }
 };
 
@@ -915,12 +1404,12 @@ const UnidadTecnicaView = {
         // Columna Estado
         const tdEstado = document.createElement('td');
         tdEstado.className = 'px-6 py-4';
-        tdEstado.innerHTML = this.crearBadgeEstado(solicitud);
+        tdEstado.innerHTML = EstadosUtil.crearBadgeEstado(solicitud);
 
-        // Columna Acciones
-        const tdAcciones = document.createElement('td');
-        tdAcciones.className = 'px-6 py-4 text-center';
-        tdAcciones.innerHTML = this.crearBotonesAccion(solicitud);
+        // Columna Días Abierto
+        const tdDiasAbierto = document.createElement('td');
+        tdDiasAbierto.className = 'px-6 py-4 text-center';
+        tdDiasAbierto.innerHTML = EstadosUtil.calcularDiasAbierto(solicitud.fechaCreacion);
 
         // Agregar columnas a la fila
         tr.appendChild(tdId);
@@ -928,64 +1417,9 @@ const UnidadTecnicaView = {
         tr.appendChild(tdContacto);
         tr.appendChild(tdDescripcion);
         tr.appendChild(tdEstado);
-        tr.appendChild(tdAcciones);
-
-        // Event listeners para los botones
-        this.agregarEventListenersAcciones(tr, solicitud);
+        tr.appendChild(tdDiasAbierto);
 
         return tr;
-    },
-
-    crearBadgeEstado(estado) {
-        const badges = {
-            'pendiente': '<span class="badge badge-pendiente"><i class="fas fa-clock mr-1"></i>Pendiente</span>',
-            'revision': '<span class="badge badge-revision"><i class="fas fa-spinner mr-1"></i>En Revisión</span>',
-            'finalizada': '<span class="badge badge-finalizada"><i class="fas fa-check mr-1"></i>Finalizada</span>'
-        };
-        return badges[estado] || badges.pendiente;
-    },
-
-    crearBotonesAccion(solicitud) {
-        if (solicitud.estado === 'pendiente') {
-            return `
-                <button class="action-button action-button-revision" data-action="revision" data-id="${solicitud.id}">
-                    <i class="fas fa-eye"></i>
-                    <span>Revisar</span>
-                </button>
-            `;
-        } else if (solicitud.estado === 'revision') {
-            return `
-                <button class="action-button action-button-finalizar" data-action="finalizar" data-id="${solicitud.id}">
-                    <i class="fas fa-check"></i>
-                    <span>Finalizar</span>
-                </button>
-            `;
-        } else {
-            return `
-                <span class="text-sm" style="color: var(--text-muted);">
-                    <i class="fas fa-check-circle"></i> Completada
-                </span>
-            `;
-        }
-    },
-
-    agregarEventListenersAcciones(fila, solicitud) {
-        const botones = fila.querySelectorAll('.action-button');
-
-        botones.forEach(boton => {
-            boton.addEventListener('click', () => {
-                const accion = boton.getAttribute('data-action');
-                const id = boton.getAttribute('data-id');
-
-                if (accion === 'revision') {
-                    APP.cambiarEstado(id, 'revision');
-                    this.actualizar();
-                } else if (accion === 'finalizar') {
-                    APP.cambiarEstado(id, 'finalizada');
-                    this.actualizar();
-                }
-            });
-        });
     },
 
     formatearFecha(fechaISO) {
@@ -1066,6 +1500,7 @@ const ModalDetalle = {
         document.getElementById('modal-rut').textContent = solicitud.rut;
         document.getElementById('modal-email').textContent = solicitud.email;
         document.getElementById('modal-telefono').textContent = solicitud.telefono;
+        document.getElementById('modal-titulo').textContent = solicitud.titulo || 'Sin título';
         document.getElementById('modal-descripcion').textContent = solicitud.descripcion;
         document.getElementById('modal-fecha').textContent = this.formatearFecha(solicitud.fechaCreacion);
         
@@ -1113,13 +1548,20 @@ const ModalDetalle = {
         const estadoUTContainer = document.getElementById('modal-estado-ut-container');
         const estadoUTSelect = document.getElementById('modal-estado-ut');
         
+        // Mostrar u ocultar selector de asignación de unidad técnica
+        const asignacionUTContainer = document.getElementById('modal-asignacion-ut-container');
+        
         // SOLO mostrar selector de estado si se abre desde Unidad Técnica
         if (origenVista === 'unidad-tecnica' && solicitud.unidadTecnica && solicitud.unidadTecnica !== '') {
             estadoUTContainer.classList.remove('hidden');
             estadoUTSelect.value = solicitud.estadoUnidadTecnica || '';
+            // Ocultar selector de asignación porque ya está asignada
+            asignacionUTContainer.classList.add('hidden');
             console.log('🏢 Mostrando selector de estado UT (desde Unidad Técnica), estado actual:', solicitud.estadoUnidadTecnica);
         } else {
             estadoUTContainer.classList.add('hidden');
+            // Mostrar selector de asignación solo si es funcionario
+            asignacionUTContainer.classList.remove('hidden');
             console.log('👤 Ocultando selector de estado UT (origen:', origenVista, ')');
         }
 
@@ -1231,7 +1673,7 @@ const DatosDeEjemplo = {
     cargarSolicitudesDeEjemplo() {
         const ejemplos = [
             {
-                id: 'OP-1699000001-001',
+                id: '241031-001',
                 nombre: 'Carlos Alberto Mendoza',
                 rut: '12.345.678-9',
                 email: 'carlos.mendoza@email.com',
@@ -1242,7 +1684,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699100002-002',
+                id: '241107-002',
                 nombre: 'María Francisca Rodríguez López',
                 rut: '11.234.567-8',
                 email: 'mfrodriguez@email.com',
@@ -1253,7 +1695,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699200003-003',
+                id: '241109-003',
                 nombre: 'Jorge Luis García Fernández',
                 rut: '14.567.890-1',
                 email: 'jgarcia.fernandez@email.com',
@@ -1264,7 +1706,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699300004-004',
+                id: '241026-004',
                 nombre: 'Patricia Elena Soto Morales',
                 rut: '16.789.012-3',
                 email: 'p.soto.morales@email.com',
@@ -1275,7 +1717,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699400005-005',
+                id: '241105-005',
                 nombre: 'Roberto Manuel Pérez Valenzuela',
                 rut: '13.456.789-0',
                 email: 'r.perez.valenzuela@email.com',
@@ -1286,7 +1728,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699500006-006',
+                id: '241108-006',
                 nombre: 'Verónica Alejandra González Parra',
                 rut: '15.678.901-2',
                 email: 'v.gonzalez.parra@email.com',
@@ -1297,7 +1739,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699600007-007',
+                id: '241021-007',
                 nombre: 'Andrés Felipe Contreras Díaz',
                 rut: '17.890.123-4',
                 email: 'a.contreras.diaz@email.com',
@@ -1308,7 +1750,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699700008-008',
+                id: '241109-008',
                 nombre: 'Claudia Marcela Flores Gutierrez',
                 rut: '18.901.234-5',
                 email: 'c.flores.gutierrez@email.com',
@@ -1319,7 +1761,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699800009-009',
+                id: '241110-009',
                 nombre: 'Luis Alberto Torres Ramírez',
                 rut: '19.012.345-6',
                 email: 'l.torres.ramirez@email.com',
@@ -1330,7 +1772,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1699900010-010',
+                id: '241110-010',
                 nombre: 'Ana María Vega Silva',
                 rut: '20.123.456-7',
                 email: 'anavega.silva@email.com',
@@ -1341,7 +1783,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1700000011-011',
+                id: '241110-011',
                 nombre: 'Fernando José Muñoz Herrera',
                 rut: '21.234.567-8',
                 email: 'fjmunoz.h@email.com',
@@ -1352,7 +1794,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1700100012-012',
+                id: '241016-012',
                 nombre: 'Isabel Cristina Rojas Campos',
                 rut: '22.345.678-9',
                 email: 'icrojas.campos@email.com',
@@ -1363,7 +1805,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1700200013-013',
+                id: '241109-013',
                 nombre: 'Diego Antonio Morales Pinto',
                 rut: '23.456.789-0',
                 email: 'dmorales.pinto@email.com',
@@ -1374,7 +1816,7 @@ const DatosDeEjemplo = {
                 fechaCreacion: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString()
             },
             {
-                id: 'OP-1700300014-014',
+                id: '241110-014',
                 nombre: 'Carmen Gloria Espinoza Díaz',
                 rut: '24.567.890-1',
                 email: 'cgespinoza.d@email.com',
@@ -1424,11 +1866,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicializar componentes
-    ThemeManager.init();
-    HeaderClock.init();
     TabManager.init();
     FormularioCiudadano.init();
+    FormularioFuncionario.init();
+    FormularioFuncionarioEspecifico.init();
     ModalDetalle.init();
+    FuncionarioView.initFiltros();
 
     // Evento para botón de cargar ejemplos (para debugging)
     const btnCargarEjemplos = document.getElementById('btn-cargar-ejemplos');
