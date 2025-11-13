@@ -9,7 +9,7 @@
     "descripcion": "Solicitud de cambio de domicilio para servicios municipales y actualización de base de datos.",
     "estado": "finalizada",
     "unidadTecnica": "dat",
-    "fechaCreacion": "2024-11-05T10:30:00.000Z"
+    "fechaCreacion": "2025-09-18T10:30:00.000Z"
   },
   {
     "id": "24-1107",
@@ -21,7 +21,7 @@
     "descripcion": "Consulta sobre trámite de pensión alimenticia y requisitos documentales necesarios.",
     "estado": "revision",
     "unidadTecnica": "",
-    "fechaCreacion": "2024-11-11T14:20:00.000Z"
+    "fechaCreacion": "2025-11-05T14:20:00.000Z"
   },
   {
     "id": "24-1109",
@@ -33,7 +33,7 @@
     "descripcion": "Reclamo sobre falta de servicio de recolección de basura en la calle Los Andes sector sur.",
     "estado": "pendiente",
     "unidadTecnica": "",
-    "fechaCreacion": "2024-11-08T08:15:00.000Z"
+    "fechaCreacion": "2025-11-10T08:15:00.000Z"
   },
   {
     "id": "24-1026",
@@ -45,7 +45,7 @@
     "descripcion": "Solicitud de permiso para evento comunitario en parque municipal el próximo mes.",
     "estado": "finalizada",
     "unidadTecnica": "parques-jardines",
-    "fechaCreacion": "2024-10-28T11:45:00.000Z",
+    "fechaCreacion": "2025-08-22T11:45:00.000Z",
     "datosParquesJardines": {
       "tipoTerreno": "parque-publico",
       "tipoVegetacion": "cesped-arboles",
@@ -62,7 +62,7 @@
     "descripcion": "Trámite de obtención de certificado de dominio para proceso de compraventa inmobiliaria.",
     "estado": "revision",
     "unidadTecnica": "patentes-comerciales",
-    "fechaCreacion": "2024-11-01T16:30:00.000Z"
+    "fechaCreacion": "2025-10-28T16:30:00.000Z"
   },
   {
     "id": "24-1108",
@@ -74,7 +74,7 @@
     "descripcion": "Consulta sobre beneficios sociales y programas de subsidios para familias de escasos recursos.",
     "estado": "pendiente",
     "unidadTecnica": "",
-    "fechaCreacion": "2024-11-12T09:00:00.000Z"
+    "fechaCreacion": "2025-11-12T09:00:00.000Z"
   },
   {
     "id": "24-1021",
@@ -86,7 +86,7 @@
     "descripcion": "Reclamo por daños en infraestructura vial y solicitud de reparación en calle principal.",
     "estado": "finalizada",
     "unidadTecnica": "alumbrado-publico",
-    "fechaCreacion": "2024-11-10T13:20:00.000Z"
+    "fechaCreacion": "2025-10-15T13:20:00.000Z"
   },
   {
     "id": "24-1109",
@@ -98,7 +98,7 @@
     "descripcion": "Solicitud de información sobre proceso electoral y registro de votantes para próximas elecciones.",
     "estado": "pendiente",
     "unidadTecnica": "",
-    "fechaCreacion": "2024-11-06T10:30:00.000Z"
+    "fechaCreacion": "2025-11-01T10:30:00.000Z"
   },
   {
     "id": "25-0009",
@@ -110,7 +110,7 @@
     "descripcion": "Denuncia por comercio ambulante sin permiso en Avenida Principal esquina con Calle Comercio.",
     "estado": "pendiente",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-11-09T07:45:00.000Z"
+    "fechaCreacion": "2025-11-08T07:45:00.000Z"
   },
   {
     "id": "25-0010",
@@ -122,7 +122,7 @@
     "descripcion": "Reclamo por establecimiento comercial que opera fuera del horario permitido y genera ruidos molestos.",
     "estado": "revision",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-11-07T19:30:00.000Z"
+    "fechaCreacion": "2025-10-20T19:30:00.000Z"
   },
   {
     "id": "25-0011",
@@ -134,7 +134,7 @@
     "descripcion": "Solicitud de fiscalización de obra en construcción sin permiso municipal visible en el sector norte.",
     "estado": "pendiente",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-11-13T03:15:00.000Z"
+    "fechaCreacion": "2025-11-11T03:15:00.000Z"
   },
   {
     "id": "24-1016",
@@ -146,9 +146,9 @@
     "descripcion": "Denuncia por local comercial que no cumple con normas sanitarias y de higiene alimentaria.",
     "estado": "finalizada",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-10-20T15:00:00.000Z",
+    "fechaCreacion": "2025-07-10T15:00:00.000Z",
     "estadoUnidadTecnica": "finalizado",
-    "fechaActualizacionUT": "2024-10-30T17:30:00.000Z"
+    "fechaActualizacionUT": "2025-07-25T17:30:00.000Z"
   },
   {
     "id": "25-0013",
@@ -160,7 +160,7 @@
     "descripcion": "Reclamo por vehículos que ocupan espacio público como estacionamiento permanente.",
     "estado": "revision",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-11-04T13:20:00.000Z"
+    "fechaCreacion": "2025-10-05T13:20:00.000Z"
   },
   {
     "id": "25-0014",
@@ -172,6 +172,6 @@
     "descripcion": "Solicitud de inspección por posible cierre irregular de callejón de uso público.",
     "estado": "pendiente",
     "unidadTecnica": "fiscalizacion",
-    "fechaCreacion": "2024-11-12T01:00:00.000Z"
+    "fechaCreacion": "2025-11-09T01:00:00.000Z"
   }
 ]
