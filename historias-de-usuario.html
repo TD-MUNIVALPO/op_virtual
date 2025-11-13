@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historias de Usuario - Oficina de Partes Digital</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muni-blue': '#294589',
+                        'muni-blue-dark': '#1e3a72',
+                        'muni-blue-darkest': '#0b2447',
+                        'muni-blue-light': '#60a5fa',
+                        'muni-yellow': '#ffdc04',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .user-story-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .user-story-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .user-story-card.epic-ciudadano {
+            border-left-color: #10b981;
+        }
+        .user-story-card.epic-funcionario {
+            border-left-color: #3b82f6;
+        }
+        .user-story-card.epic-unidad-tecnica {
+            border-left-color: #9333ea;
+        }
+        .priority-high { color: #ef4444; }
+        .priority-medium { color: #f59e0b; }
+        .priority-low { color: #10b981; }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-implemented { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .status-in-progress { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .status-planned { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col" style="background: var(--body-bg);">
+
+    <!-- Header Principal -->
+    <header class="header-principal h-32 flex items-center justify-between px-12 shadow-lg border-b relative overflow-hidden"
+            style="border-color: var(--border-subtle);">
+
+        <!-- Luces animadas de fondo -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none lights-container">
+            <div class="light light-1"></div>
+            <div class="light light-2"></div>
+            <div class="light light-3"></div>
+        </div>
+
+        <!-- Contenido del header -->
+        <div class="relative z-10 flex items-center gap-6">
+            <img src="images/Municipalidad-de-Valparaiso_logo_full color.png"
+                 alt="Logo Municipalidad de Valparaíso"
+                 class="h-28 w-auto drop-shadow-lg"
+                 onerror="this.style.display='none'">
+            <div>
+                <h1 class="text-4xl font-bold drop-shadow-md" style="color: #60a5fa;">Historias de Usuario</h1>
+                <p class="text-lg drop-shadow-sm" style="color: #93c5fd;">Oficina de Partes Digital</p>
+            </div>
+        </div>
+
+        <div class="relative z-10 flex items-center gap-4">
+            <!-- Botón volver -->
+            <a href="index.html" class="flex items-center gap-2 px-4 py-3 rounded-lg transition-all hover:scale-105"
+               style="background: rgba(30, 58, 114, 0.3); backdrop-filter: blur(8px); border: 1px solid rgba(147, 197, 253, 0.3);">
+                <i class="fas fa-arrow-left text-slate-100"></i>
+                <span class="text-sm font-medium text-slate-100">Volver a la App</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+
+        <!-- Introducción -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                <div class="px-6 py-4 border-b" style="border-color: var(--border-card);">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #06b6d4;">
+                            <i class="fas fa-info-circle text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold" style="color: var(--text-primary);">Sobre este documento</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Documentación de requisitos del sistema</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="mb-4" style="color: var(--text-secondary);">
+                        Este documento describe las historias de usuario identificadas para el sistema de <strong>Oficina de Partes Digital</strong>
+                        de la Municipalidad de Valparaíso. Las historias están organizadas por épicas que representan los tres roles principales del sistema.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="p-4 rounded-lg border" style="background: var(--section-bg); border-color: var(--border-card); border-left: 4px solid #10b981;">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-user text-xl" style="color: #10b981;"></i>
+                                <h3 class="font-semibold" style="color: var(--text-primary);">Ciudadano</h3>
+                            </div>
+                            <p class="text-sm" style="color: var(--text-secondary);">Usuarios que envían solicitudes a la municipalidad</p>
+                        </div>
+                        <div class="p-4 rounded-lg border" style="background: var(--section-bg); border-color: var(--border-card); border-left: 4px solid #3b82f6;">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-briefcase text-xl" style="color: #3b82f6;"></i>
+                                <h3 class="font-semibold" style="color: var(--text-primary);">Funcionario</h3>
+                            </div>
+                            <p class="text-sm" style="color: var(--text-secondary);">Personal que gestiona y deriva solicitudes</p>
+                        </div>
+                        <div class="p-4 rounded-lg border" style="background: var(--section-bg); border-color: var(--border-card); border-left: 4px solid #9333ea;">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-building text-xl" style="color: #9333ea;"></i>
+                                <h3 class="font-semibold" style="color: var(--text-primary);">Unidad Técnica</h3>
+                            </div>
+                            <p class="text-sm" style="color: var(--text-secondary);">Departamentos que resuelven solicitudes asignadas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="rounded-lg border p-6 text-center" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="text-3xl font-bold text-muni-blue mb-2">18</div>
+                    <div class="text-sm" style="color: var(--text-secondary);">Historias Totales</div>
+                </div>
+                <div class="rounded-lg border p-6 text-center" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="text-3xl font-bold" style="color: #10b981;">12</div>
+                    <div class="text-sm" style="color: var(--text-secondary);">Implementadas</div>
+                </div>
+                <div class="rounded-lg border p-6 text-center" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="text-3xl font-bold" style="color: #3b82f6;">3</div>
+                    <div class="text-sm" style="color: var(--text-secondary);">En Progreso</div>
+                </div>
+                <div class="rounded-lg border p-6 text-center" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="text-3xl font-bold" style="color: #94a3b8;">3</div>
+                    <div class="text-sm" style="color: var(--text-secondary);">Planeadas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Épica 1: Ciudadano -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="rounded-lg border overflow-hidden epic-section" style="background: var(--card-bg); border-color: var(--border-card);">
+                <button class="w-full px-6 py-4 border-b flex items-center justify-between accordion-trigger"
+                        style="border-color: var(--border-card); background: linear-gradient(to right, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);"
+                        onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #10b981;">
+                            <i class="fas fa-user text-white text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Épica 1: Gestión de Solicitudes Ciudadanas</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Como ciudadano, quiero poder enviar y gestionar mis solicitudes municipales</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl accordion-icon" style="color: var(--text-secondary); transition: transform 0.3s;"></i>
+                </button>
+
+                <div class="accordion-content active">
+                    <div class="p-6 space-y-4">
+
+                        <!-- HU-01 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-01</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Enviar solicitud con información personal</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> completar un formulario con mis datos personales (nombre, RUT, email, teléfono, dirección),<br>
+                                    <strong>para</strong> enviar una solicitud a la municipalidad.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>El formulario valida que todos los campos obligatorios estén completos</li>
+                                        <li>El RUT debe tener formato chileno válido (12.345.678-9)</li>
+                                        <li>El email debe tener formato válido</li>
+                                        <li>El teléfono debe tener al menos 8 dígitos</li>
+                                        <li>Se muestra mensaje de error claro si la validación falla</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-02 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-02</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Incluir nombre social</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> poder indicar mi nombre social (opcional),<br>
+                                    <strong>para</strong> que me identifiquen con el nombre con el que me siento cómodo.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>El campo de nombre social es opcional</li>
+                                        <li>El formulario acepta cualquier texto válido como nombre social</li>
+                                        <li>El sistema respeta la identidad de género del solicitante</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>2</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-03 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-03</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Describir solicitud detalladamente</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> escribir una descripción detallada de mi solicitud o problema,<br>
+                                    <strong>para</strong> que el funcionario entienda claramente mi necesidad.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>El campo de descripción tiene espacio suficiente para texto largo</li>
+                                        <li>La descripción debe tener al menos 10 caracteres</li>
+                                        <li>El campo es obligatorio</li>
+                                        <li>Se muestra contador de caracteres o placeholder informativo</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>3</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-04 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-04</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Adjuntar archivos de respaldo</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> adjuntar archivos (PDF, imágenes, Word) a mi solicitud,<br>
+                                    <strong>para</strong> proporcionar evidencia o documentación adicional.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>El sistema acepta archivos PDF, Word, JPG, PNG</li>
+                                        <li>El tamaño máximo permitido es 5MB</li>
+                                        <li>Se muestra el nombre del archivo seleccionado</li>
+                                        <li>Se valida el tipo y tamaño antes de permitir el envío</li>
+                                        <li>Este campo es opcional</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-05 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-05</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Recibir número de seguimiento</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> recibir un número de seguimiento único al enviar mi solicitud,<br>
+                                    <strong>para</strong> poder rastrear el estado de mi trámite.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>El número de seguimiento se genera automáticamente</li>
+                                        <li>El formato es: OP-[timestamp]-[random] (ej: OP-1699000001-001)</li>
+                                        <li>Se muestra prominentemente en pantalla después de enviar</li>
+                                        <li>El número es único para cada solicitud</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>3</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-06 -->
+                        <div class="user-story-card epic-ciudadano rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">HU-06</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-low">
+                                            <i class="fas fa-circle"></i> Baja
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Ver resumen de solicitud enviada</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> ciudadano,<br>
+                                    <strong>quiero</strong> ver un resumen de los datos que envié,<br>
+                                    <strong>para</strong> confirmar que toda la información es correcta.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Se muestra una pantalla de resumen después del envío exitoso</li>
+                                        <li>El resumen incluye: nombre, RUT, email, teléfono, descripción</li>
+                                        <li>Se muestra el número de seguimiento claramente</li>
+                                        <li>Hay una opción para enviar una nueva solicitud</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>2</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Épica 2: Funcionario -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="rounded-lg border overflow-hidden epic-section" style="background: var(--card-bg); border-color: var(--border-card);">
+                <button class="w-full px-6 py-4 border-b flex items-center justify-between accordion-trigger"
+                        style="border-color: var(--border-card); background: linear-gradient(to right, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);"
+                        onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #3b82f6;">
+                            <i class="fas fa-briefcase text-white text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Épica 2: Gestión de Solicitudes por Funcionarios</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Como funcionario de la Oficina de Partes, quiero gestionar y derivar solicitudes</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl accordion-icon" style="color: var(--text-secondary); transition: transform 0.3s;"></i>
+                </button>
+
+                <div class="accordion-content active">
+                    <div class="p-6 space-y-4">
+
+                        <!-- HU-07 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-07</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Ver todas las solicitudes en bandeja de entrada</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> ver una lista de todas las solicitudes recibidas,<br>
+                                    <strong>para</strong> poder revisarlas y gestionarlas de manera organizada.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Se muestra una tabla con todas las solicitudes</li>
+                                        <li>La tabla incluye: ID, solicitante, contacto, descripción, estado</li>
+                                        <li>Las solicitudes se ordenan de más reciente a más antigua</li>
+                                        <li>Se muestra un contador de solicitudes totales</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>8</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-08 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-08</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Filtrar solicitudes por estado de derivación</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> filtrar las solicitudes por estado (Todas, Pendiente por derivar, Derivadas),<br>
+                                    <strong>para</strong> enfocarme en las que requieren mi atención inmediata.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay tres botones de filtro visibles: Todas, Pendiente por derivar, Derivadas</li>
+                                        <li>"Pendiente por derivar" muestra solicitudes sin unidad técnica asignada</li>
+                                        <li>"Derivadas" muestra solicitudes con unidad técnica asignada</li>
+                                        <li>El filtro activo se resalta visualmente</li>
+                                        <li>El contador se actualiza según el filtro aplicado</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>2</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-09 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-09</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Ver detalle completo de una solicitud</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> hacer clic en una solicitud para ver todos sus detalles,<br>
+                                    <strong>para</strong> analizar el caso completo antes de asignarlo.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Se abre un modal con todos los detalles de la solicitud</li>
+                                        <li>Se muestra: nombre, RUT, email, teléfono, dirección, descripción completa</li>
+                                        <li>Se muestra el archivo adjunto si existe</li>
+                                        <li>Se muestra el estado actual y fecha de creación</li>
+                                        <li>El modal se puede cerrar con X, botón cancelar o tecla ESC</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-10 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-10</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Asignar solicitud a unidad técnica</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> asignar una solicitud a una unidad técnica específica,<br>
+                                    <strong>para</strong> que el equipo correspondiente se haga cargo del caso.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay un selector con las unidades disponibles</li>
+                                        <li>Las unidades incluyen: Desarrollo Económico, DAT, Parques y Jardines, Alumbrado Público, Fiscalización, Tránsito, Patentes Comerciales</li>
+                                        <li>Al guardar, la asignación se refleja inmediatamente en la tabla</li>
+                                        <li>El badge de estado se actualiza para mostrar "Derivado a: [Unidad]"</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-11 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-11</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Cambiar estado de solicitud</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> cambiar el estado de una solicitud (Pendiente, Revisión, Finalizada),<br>
+                                    <strong>para</strong> reflejar el avance en su gestión.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay botones para cambiar estado según el estado actual</li>
+                                        <li>Pendiente → botón "Revisar" → cambia a Revisión</li>
+                                        <li>Revisión → botón "Finalizar" → cambia a Finalizada</li>
+                                        <li>Los badges de estado se actualizan automáticamente</li>
+                                        <li>No se pueden revertir estados (flujo unidireccional)</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>3</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-12 -->
+                        <div class="user-story-card epic-funcionario rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">HU-12</span>
+                                        <span class="status-badge status-in-progress">
+                                            <i class="fas fa-spinner"></i>
+                                            En Progreso
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Buscar solicitudes por ID o nombre</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> funcionario,<br>
+                                    <strong>quiero</strong> buscar solicitudes por ID o nombre del solicitante,<br>
+                                    <strong>para</strong> encontrar rápidamente casos específicos.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay un campo de búsqueda visible en la vista de funcionario</li>
+                                        <li>La búsqueda filtra en tiempo real mientras se escribe</li>
+                                        <li>Se busca tanto en ID como en nombre del solicitante</li>
+                                        <li>Se muestra un mensaje si no hay resultados</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>2</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Épica 3: Unidad Técnica -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="rounded-lg border overflow-hidden epic-section" style="background: var(--card-bg); border-color: var(--border-card);">
+                <button class="w-full px-6 py-4 border-b flex items-center justify-between accordion-trigger"
+                        style="border-color: var(--border-card); background: linear-gradient(to right, rgba(147, 51, 234, 0.05) 0%, rgba(147, 51, 234, 0.02) 100%);"
+                        onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #9333ea;">
+                            <i class="fas fa-building text-white text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Épica 3: Gestión de Solicitudes por Unidad Técnica</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Como miembro de una unidad técnica, quiero resolver solicitudes asignadas</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl accordion-icon" style="color: var(--text-secondary); transition: transform 0.3s;"></i>
+                </button>
+
+                <div class="accordion-content active">
+                    <div class="p-6 space-y-4">
+
+                        <!-- HU-13 -->
+                        <div class="user-story-card epic-unidad-tecnica rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(147, 51, 234, 0.15); color: #9333ea;">HU-13</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Ver solicitudes asignadas a mi unidad</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> miembro de una unidad técnica (ej: Fiscalización),<br>
+                                    <strong>quiero</strong> ver solo las solicitudes asignadas a mi unidad,<br>
+                                    <strong>para</strong> enfocarme en los casos que debo resolver.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>La vista muestra solo solicitudes de mi unidad técnica</li>
+                                        <li>La tabla tiene la misma estructura que la vista funcionario</li>
+                                        <li>El título indica claramente la unidad (ej: "Bandeja de Entrada - Fiscalización")</li>
+                                        <li>Se muestra un contador de solicitudes asignadas</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>8</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-14 -->
+                        <div class="user-story-card epic-unidad-tecnica rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(147, 51, 234, 0.15); color: #9333ea;">HU-14</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-high">
+                                            <i class="fas fa-exclamation-circle"></i> Alta
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Revisar y gestionar solicitudes</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> miembro de unidad técnica,<br>
+                                    <strong>quiero</strong> cambiar el estado de las solicitudes de mi unidad,<br>
+                                    <strong>para</strong> reflejar el progreso de mi trabajo.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Puedo cambiar estados igual que el funcionario</li>
+                                        <li>Los botones de acción funcionan de la misma manera</li>
+                                        <li>Puedo ver el detalle completo haciendo clic en la fila</li>
+                                        <li>Los cambios se reflejan inmediatamente</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-15 -->
+                        <div class="user-story-card epic-unidad-tecnica rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(147, 51, 234, 0.15); color: #9333ea;">HU-15</span>
+                                        <span class="status-badge status-in-progress">
+                                            <i class="fas fa-spinner"></i>
+                                            En Progreso
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Agregar notas internas a solicitudes</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> miembro de unidad técnica,<br>
+                                    <strong>quiero</strong> agregar notas internas a una solicitud,<br>
+                                    <strong>para</strong> documentar avances o comentarios para mi equipo.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay un campo de texto en el detalle para agregar notas</li>
+                                        <li>Las notas se guardan con timestamp y usuario</li>
+                                        <li>Las notas son visibles solo para funcionarios y unidades técnicas</li>
+                                        <li>Se puede ver el historial de notas</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>8</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>2</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-16 -->
+                        <div class="user-story-card epic-unidad-tecnica rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card);">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(147, 51, 234, 0.15); color: #9333ea;">HU-16</span>
+                                        <span class="status-badge status-planned">
+                                            <i class="fas fa-clock"></i>
+                                            Planeada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-low">
+                                            <i class="fas fa-circle"></i> Baja
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Contactar al ciudadano desde la plataforma</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> miembro de unidad técnica,<br>
+                                    <strong>quiero</strong> enviar un mensaje o email al ciudadano desde la plataforma,<br>
+                                    <strong>para</strong> solicitar información adicional o notificar sobre el avance.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay un botón "Contactar Ciudadano" en el detalle</li>
+                                        <li>Se abre un formulario para escribir el mensaje</li>
+                                        <li>El mensaje se envía al email registrado del ciudadano</li>
+                                        <li>Se guarda un registro de la comunicación</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>13</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>3</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Épica 4: Sistema General -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="rounded-lg border overflow-hidden epic-section" style="background: var(--card-bg); border-color: var(--border-card);">
+                <button class="w-full px-6 py-4 border-b flex items-center justify-between accordion-trigger"
+                        style="border-color: var(--border-card); background: linear-gradient(to right, rgba(100, 116, 139, 0.05) 0%, rgba(100, 116, 139, 0.02) 100%);"
+                        onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #64748b;">
+                            <i class="fas fa-cog text-white text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Épica 4: Características Generales del Sistema</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Como usuario del sistema, quiero funcionalidades transversales</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-xl accordion-icon" style="color: var(--text-secondary); transition: transform 0.3s;"></i>
+                </button>
+
+                <div class="accordion-content active">
+                    <div class="p-6 space-y-4">
+
+                        <!-- HU-17 -->
+                        <div class="user-story-card rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card); border-left-color: #64748b;">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(100, 116, 139, 0.15); color: #64748b;">HU-17</span>
+                                        <span class="status-badge status-implemented">
+                                            <i class="fas fa-check-circle"></i>
+                                            Implementada
+                                        </span>
+                                        <span class="text-xs font-semibold priority-low">
+                                            <i class="fas fa-circle"></i> Baja
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Cambiar entre tema claro y oscuro</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> usuario del sistema,<br>
+                                    <strong>quiero</strong> cambiar entre tema claro y oscuro,<br>
+                                    <strong>para</strong> usar la aplicación cómodamente según mis preferencias visuales.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>Hay un botón "Tema" visible en el header</li>
+                                        <li>El botón alterna entre luna (tema oscuro) y sol (tema claro)</li>
+                                        <li>La preferencia se guarda en localStorage</li>
+                                        <li>El tema persiste entre sesiones</li>
+                                        <li>Todos los componentes respetan el tema activo</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>5</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>1</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HU-18 -->
+                        <div class="user-story-card rounded-lg border p-6" style="background: var(--card-bg); border-color: var(--border-card); border-left-color: #64748b;">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: rgba(100, 116, 139, 0.15); color: #64748b;">HU-18</span>
+                                        <span class="status-badge status-in-progress">
+                                            <i class="fas fa-spinner"></i>
+                                            En Progreso
+                                        </span>
+                                        <span class="text-xs font-semibold priority-medium">
+                                            <i class="fas fa-minus-circle"></i> Media
+                                        </span>
+                                    </div>
+                                    <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">Diseño responsive para móviles</h3>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p style="color: var(--text-secondary);">
+                                    <strong>Como</strong> usuario del sistema,<br>
+                                    <strong>quiero</strong> que la aplicación funcione correctamente en dispositivos móviles,<br>
+                                    <strong>para</strong> poder usarla desde cualquier dispositivo.
+                                </p>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">Criterios de Aceptación:</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm" style="color: var(--text-secondary);">
+                                        <li>La aplicación es usable en pantallas desde 320px de ancho</li>
+                                        <li>El formulario se adapta a pantallas pequeñas</li>
+                                        <li>Las tablas tienen scroll horizontal en móviles</li>
+                                        <li>Los botones y elementos interactivos son táctiles</li>
+                                        <li>El modal se adapta correctamente a móviles</li>
+                                    </ul>
+                                </div>
+
+                                <div class="pt-3 border-t" style="border-color: var(--border-card);">
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-tasks"></i> Story Points: <strong>8</strong>
+                                        </span>
+                                        <span style="color: var(--text-secondary);">
+                                            <i class="fas fa-layer-group"></i> Sprint: <strong>2</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t py-6" style="background: var(--card-bg); border-color: var(--border-card);">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm" style="color: var(--text-secondary);">
+                &copy; 2025 Municipalidad de Valparaíso - Oficina de Partes Digital
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript para Acordeón -->
+    <script>
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.accordion-icon');
+
+            content.classList.toggle('active');
+
+            if (content.classList.contains('active')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Inicializar tema
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
+    </script>
+
+</body>
+</html>

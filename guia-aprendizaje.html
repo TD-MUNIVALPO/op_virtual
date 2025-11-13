@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Aprendizaje - Oficina de Partes Digital</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        .learning-card {
+            transition: all 0.3s ease;
+        }
+        .learning-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .tip-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 3000px;
+            transition: max-height 0.5s ease-in;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        .tag-html { background: #fee2e2; color: #991b1b; }
+        .tag-js { background: #fef3c7; color: #92400e; }
+        .tag-css { background: #dbeafe; color: #1e40af; }
+        .tag-concept { background: #e0e7ff; color: #3730a3; }
+    </style>
+</head>
+<body class="min-h-screen" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-blue-600">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Guía de Aprendizaje</h1>
+                        <p class="text-gray-600">Oficina de Partes Digital - Municipalidad de Valparaíso</p>
+                    </div>
+                </div>
+                <a href="index.html" class="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg">
+                    <i class="fas fa-rocket"></i>
+                    <span class="font-medium">Ir a la Aplicación</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+
+        <!-- Introducción -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-book-open text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Bienvenido a la Guía de Aprendizaje</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        Esta guía te ayudará a comprender la arquitectura, flujo de trabajo y conceptos técnicos 
+                        del sistema de Oficina de Partes Digital. Está diseñada para facilitar el aprendizaje 
+                        progresivo desde los conceptos básicos hasta los más avanzados.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fas fa-users text-blue-600 text-2xl"></i>
+                        <h3 class="font-bold text-gray-800">3 Roles</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Ciudadano, Derivador y Unidad Técnica</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fas fa-code text-green-600 text-2xl"></i>
+                        <h3 class="font-bold text-gray-800">Vanilla JS</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Sin frameworks, JavaScript puro y modular</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fas fa-database text-purple-600 text-2xl"></i>
+                        <h3 class="font-bold text-gray-800">LocalStorage</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Persistencia local sin backend</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 1: Primeros Pasos -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">1</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Primeros Pasos</h2>
+                        <p class="text-gray-600">Cómo iniciar y explorar la aplicación</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content active">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="learning-card bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg mb-6 border border-blue-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-play-circle text-blue-600"></i>
+                            Iniciar la Aplicación
+                        </h3>
+                        <ol class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Abrir el archivo</p>
+                                    <p class="text-gray-600">Abre <code class="bg-white px-2 py-1 rounded text-sm">index.html</code> en tu navegador web</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Abrir DevTools</p>
+                                    <p class="text-gray-600">Presiona <kbd class="bg-gray-200 px-2 py-1 rounded">F12</kbd> o clic derecho → Inspeccionar → Consola</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Verificar carga de datos</p>
+                                    <p class="text-gray-600">Deberías ver mensajes como:</p>
+                                    <div class="code-block mt-2">
+📋 Iniciando carga de solicitudes...
+📊 Solicitudes en localStorage: 14
+✅ Oficina de Partes Digital iniciada correctamente</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="learning-card bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-eye text-purple-600"></i>
+                            Explorar las Pestañas
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                                <h4 class="font-bold text-green-800 mb-2">
+                                    <i class="fas fa-user mr-2"></i>Ingreso Ciudadano
+                                </h4>
+                                <p class="text-sm text-gray-700">Formulario público para que los ciudadanos envíen solicitudes a la municipalidad</p>
+                            </div>
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h4 class="font-bold text-blue-800 mb-2">
+                                    <i class="fas fa-briefcase mr-2"></i>Ingreso Funcionario (General)
+                                </h4>
+                                <p class="text-sm text-gray-700">Formulario para funcionarios con las mismas características del ciudadano</p>
+                            </div>
+                            <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                <h4 class="font-bold text-indigo-800 mb-2">
+                                    <i class="fas fa-file-alt mr-2"></i>Ingreso Funcionario (Específico)
+                                </h4>
+                                <p class="text-sm text-gray-700">Formulario con campos adicionales: tipo terreno, informe social, retiro escombros</p>
+                            </div>
+                            <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                <h4 class="font-bold text-orange-800 mb-2">
+                                    <i class="fas fa-inbox mr-2"></i>Bandeja Derivador
+                                </h4>
+                                <p class="text-sm text-gray-700">Vista del funcionario para revisar y derivar solicitudes a unidades técnicas</p>
+                            </div>
+                            <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                <h4 class="font-bold text-purple-800 mb-2">
+                                    <i class="fas fa-building mr-2"></i>Bandeja UT
+                                </h4>
+                                <p class="text-sm text-gray-700">Vista de unidad técnica para gestionar solicitudes asignadas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-lightbulb text-green-600 text-xl"></i>
+                            <div>
+                                <p class="font-bold text-green-800 mb-1">💡 Consejo de Aprendizaje</p>
+                                <p class="text-gray-700 text-sm">Navega por todas las pestañas para familiarizarte con cada rol. Observa cómo cambia la interfaz según el usuario.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 2: Arquitectura del Sistema -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">2</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Arquitectura del Sistema</h2>
+                        <p class="text-gray-600">Estructura modular y organización del código</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="learning-card bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-sitemap text-blue-600"></i>
+                            Estructura de Archivos
+                        </h3>
+                        <div class="code-block">
+op_virtual/
+├── index.html              # Documento principal con toda la UI
+├── css/
+│   └── styles.css         # Estilos personalizados y tema
+├── js/
+│   └── app.js            # Toda la lógica de la aplicación
+└── images/
+    └── logo.png          # Assets gráficos</div>
+                        
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <p class="font-bold text-red-800 mb-2">
+                                    <i class="fas fa-file-code mr-2"></i>index.html (1556 líneas)
+                                </p>
+                                <p class="text-sm text-gray-700">Contiene todos los formularios, tablas, modales y estructura de pestañas</p>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                <p class="font-bold text-yellow-800 mb-2">
+                                    <i class="fas fa-file-code mr-2"></i>app.js (1897 líneas)
+                                </p>
+                                <p class="text-sm text-gray-700">Toda la lógica: validaciones, gestión de estado, persistencia, renderizado</p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <p class="font-bold text-blue-800 mb-2">
+                                    <i class="fas fa-file-code mr-2"></i>styles.css (473 líneas)
+                                </p>
+                                <p class="text-sm text-gray-700">Variables CSS, tema claro/oscuro, badges, animaciones</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="learning-card bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-puzzle-piece text-purple-600"></i>
+                            Módulos JavaScript
+                        </h3>
+                        <p class="text-gray-700 mb-4">El archivo <code class="bg-gray-100 px-2 py-1 rounded">app.js</code> está organizado en módulos con patrón de objeto literal:</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">APP</p>
+                                    <p class="text-sm text-gray-600">Gestión central: solicitudes[], cargar, guardar, generar IDs, cambiar estados</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">TabManager</p>
+                                    <p class="text-sm text-gray-600">Control de navegación entre pestañas (activar/desactivar vistas)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">EstadosUtil</p>
+                                    <p class="text-sm text-gray-600">Creación de badges de estado y cálculo de días abiertos</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">Validaciones</p>
+                                    <p class="text-sm text-gray-600">Validación de RUT, email, teléfono, campos requeridos</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">FormularioCiudadano / FormularioFuncionario / FormularioFuncionarioEspecifico</p>
+                                    <p class="text-sm text-gray-600">Gestión de formularios: validación, envío, limpieza</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">FuncionarioView</p>
+                                    <p class="text-sm text-gray-600">Vista de derivador: tabla, filtros, renderizado de solicitudes</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">UnidadTecnicaView</p>
+                                    <p class="text-sm text-gray-600">Vista de UT: solicitudes filtradas por unidad asignada</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <span class="tag tag-js">Módulo</span>
+                                <div>
+                                    <p class="font-bold text-gray-800">ModalDetalle</p>
+                                    <p class="text-sm text-gray-600">Gestión del modal de detalles y asignación de unidades</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-info-circle text-yellow-700 text-xl"></i>
+                            <div>
+                                <p class="font-bold text-yellow-800 mb-1">📌 Importante</p>
+                                <p class="text-gray-700 text-sm">Cada módulo es un objeto literal con métodos. No hay clases ES6, manteniendo compatibilidad máxima con navegadores antiguos.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 3: Flujo de Datos -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">3</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Flujo de Datos y Estados</h2>
+                        <p class="text-gray-600">Cómo se mueven y transforman los datos</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="learning-card bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg mb-6 border border-green-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-project-diagram text-green-600"></i>
+                            Ciclo de Vida de una Solicitud
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800 mb-1">Creación (Ciudadano)</p>
+                                    <p class="text-sm text-gray-600 mb-2">El ciudadano completa el formulario y envía la solicitud</p>
+                                    <div class="code-block">
+const solicitud = {
+    id: '241111-001',
+    nombre: 'Juan Pérez',
+    rut: '12.345.678-9',
+    email: 'juan@email.com',
+    descripcion: 'Solicito...',
+    estado: 'pendiente',
+    unidadTecnica: '',
+    fechaCreacion: '2025-11-11T10:30:00Z'
+}</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800 mb-1">Persistencia (LocalStorage)</p>
+                                    <p class="text-sm text-gray-600 mb-2">La solicitud se guarda en el navegador</p>
+                                    <div class="code-block">
+APP.solicitudes.push(solicitud);
+localStorage.setItem('solicitudes_op', JSON.stringify(APP.solicitudes));</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800 mb-1">Derivación (Funcionario)</p>
+                                    <p class="text-sm text-gray-600 mb-2">El derivador asigna la solicitud a una unidad técnica</p>
+                                    <div class="code-block">
+APP.asignarUnidadTecnica('241111-001', 'fiscalizacion');
+// solicitud.unidadTecnica = 'fiscalizacion'
+// solicitud.estado permanece 'pendiente'</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">4</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800 mb-1">Ejecución (Unidad Técnica)</p>
+                                    <p class="text-sm text-gray-600 mb-2">La UT recibe y cambia el estado a "en-ejecucion"</p>
+                                    <div class="code-block">
+APP.cambiarEstadoUnidadTecnica('241111-001', 'en-ejecucion');
+// solicitud.estadoUnidadTecnica = 'en-ejecucion'</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">5</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800 mb-1">Finalización</p>
+                                    <p class="text-sm text-gray-600 mb-2">La UT marca como finalizado o rechazado</p>
+                                    <div class="code-block">
+APP.cambiarEstadoUnidadTecnica('241111-001', 'finalizado');
+// solicitud.estadoUnidadTecnica = 'finalizado'</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="learning-card bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-layer-group text-indigo-600"></i>
+                            Sistema de Estados (3 Niveles)
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h4 class="font-bold text-blue-800 mb-3">Nivel 1: General</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">pendiente</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">revision</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">finalizada</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-3">Campo: <code>estado</code></p>
+                            </div>
+
+                            <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                <h4 class="font-bold text-purple-800 mb-3">Nivel 2: Derivación</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-gray-400 rounded-full"></span>
+                                        <span class="text-sm">Sin asignar</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                        <span class="text-sm">Derivado a UT</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-3">Campo: <code>unidadTecnica</code></p>
+                            </div>
+
+                            <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                <h4 class="font-bold text-orange-800 mb-3">Nivel 3: UT</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-orange-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">en-ejecucion</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">finalizado</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                                        <span class="text-sm font-mono">rechazado</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600 mt-3">Campo: <code>estadoUnidadTecnica</code></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-brain text-green-600 text-xl"></i>
+                            <div>
+                                <p class="font-bold text-green-800 mb-1">🧠 Concepto Clave: Prioridad de Estados</p>
+                                <p class="text-gray-700 text-sm">El badge mostrado sigue esta jerarquía: <strong>Nivel 3 (UT) > Nivel 2 (Derivación) > Nivel 1 (General)</strong>. Esto permite que el estado más específico prevalezca visualmente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 4: Conceptos Técnicos -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">4</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Conceptos Técnicos Clave</h2>
+                        <p class="text-gray-600">Patrones y técnicas utilizadas</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-blue-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-cube text-blue-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">Patrón Módulo</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Organización del código en objetos con métodos relacionados</p>
+                            <div class="code-block">
+const MiModulo = {
+    propiedad: valor,
+    
+    metodo1() {
+        // lógica
+    },
+    
+    metodo2() {
+        // lógica
+    }
+};</div>
+                            <span class="tag tag-concept mt-3">Concepto</span>
+                            <span class="tag tag-js">JavaScript</span>
+                        </div>
+
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-purple-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-database text-purple-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">LocalStorage</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Persistencia de datos en el navegador (hasta 10MB)</p>
+                            <div class="code-block">
+// Guardar
+localStorage.setItem('clave', JSON.stringify(datos));
+
+// Cargar
+const datos = JSON.parse(localStorage.getItem('clave'));</div>
+                            <span class="tag tag-concept mt-3">Concepto</span>
+                            <span class="tag tag-js">JavaScript</span>
+                        </div>
+
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-green-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">Validación en Tiempo Real</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Feedback inmediato al usuario mientras escribe</p>
+                            <div class="code-block">
+campo.addEventListener('blur', () => {
+    if (!validar(campo.value)) {
+        mostrarError(campo);
+    }
+});</div>
+                            <span class="tag tag-concept mt-3">Concepto</span>
+                            <span class="tag tag-js">JavaScript</span>
+                        </div>
+
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-orange-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-paint-brush text-orange-600 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">Variables CSS</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Tema dinámico con variables CSS reutilizables</p>
+                            <div class="code-block">
+:root {
+    --text-primary: #e2e8f0;
+    --bg-card: #1e293b;
+}
+
+.theme-light {
+    --text-primary: #1e293b;
+    --bg-card: #ffffff;
+}</div>
+                            <span class="tag tag-concept mt-3">Concepto</span>
+                            <span class="tag tag-css">CSS</span>
+                        </div>
+
+                    </div>
+
+                    <div class="learning-card bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border border-indigo-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-code text-indigo-600"></i>
+                            Renderizado Dinámico de DOM
+                        </h3>
+                        <p class="text-gray-700 mb-4">Las tablas se generan completamente con JavaScript, creando elementos HTML dinámicamente:</p>
+                        <div class="code-block">
+crearFilaSolicitud(solicitud) {
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-gray-700 cursor-pointer';
+    
+    const tdId = document.createElement('td');
+    tdId.textContent = solicitud.id;
+    
+    tr.appendChild(tdId);
+    // ... más columnas
+    
+    return tr;
+}</div>
+                        <div class="mt-4 p-4 bg-white rounded-lg">
+                            <p class="text-sm text-gray-700"><strong>Ventaja:</strong> Control total sobre el contenido, permite actualización reactiva sin recargar la página.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 5: Ejercicios Prácticos -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">5</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Ejercicios Prácticos</h2>
+                        <p class="text-gray-600">Actividades para profundizar tu aprendizaje</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="space-y-6">
+                        
+                        <div class="learning-card bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-300">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-green-500 text-white rounded-lg flex items-center justify-center text-xl font-bold">1</div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2">Explorar los datos en consola</h3>
+                                    <p class="text-gray-700 mb-3">Abre la consola del navegador y ejecuta:</p>
+                                    <div class="code-block mb-3">
+// Ver todas las solicitudes
+console.log(APP.solicitudes);
+
+// Ver estadísticas
+console.log(APP.obtenerEstadisticas());
+
+// Crear una solicitud de prueba
+APP.agregarSolicitud({
+    nombre: 'Tu Nombre',
+    rut: '11.111.111-1',
+    email: 'test@test.com',
+    telefono: '912345678',
+    descripcion: 'Solicitud de prueba'
+});</div>
+                                    <p class="text-sm text-green-800 font-semibold">✅ Objetivo: Familiarizarte con la estructura de datos</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="learning-card bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-300">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-blue-500 text-white rounded-lg flex items-center justify-center text-xl font-bold">2</div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2">Seguir el flujo completo</h3>
+                                    <ol class="space-y-2 text-gray-700 mb-3">
+                                        <li class="flex items-start gap-2">
+                                            <span class="font-bold text-blue-600">a)</span>
+                                            <span>Crea una solicitud desde el formulario ciudadano</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="font-bold text-blue-600">b)</span>
+                                            <span>Ve a "Bandeja Derivador" y encuéntrala en "Pendientes por derivar"</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="font-bold text-blue-600">c)</span>
+                                            <span>Haz clic en la fila, abre el modal y asigna a "Fiscalización"</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="font-bold text-blue-600">d)</span>
+                                            <span>Ve a "Bandeja UT" y verifica que apareció en la tabla</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="font-bold text-blue-600">e)</span>
+                                            <span>Abre el modal desde UT y cambia el estado a "En ejecución"</span>
+                                        </li>
+                                    </ol>
+                                    <p class="text-sm text-blue-800 font-semibold">✅ Objetivo: Entender el ciclo completo de una solicitud</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="learning-card bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-300">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-purple-500 text-white rounded-lg flex items-center justify-center text-xl font-bold">3</div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2">Modificar el código</h3>
+                                    <p class="text-gray-700 mb-3">Intenta hacer estos cambios en <code>app.js</code>:</p>
+                                    <ul class="space-y-2 text-gray-700 mb-3">
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-code text-purple-600 mt-1"></i>
+                                            <span>Agrega una nueva unidad técnica al selector (ej: "Medio Ambiente")</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-code text-purple-600 mt-1"></i>
+                                            <span>Cambia el color del badge "En ejecución" a verde</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-code text-purple-600 mt-1"></i>
+                                            <span>Modifica el formato de ID (ejemplo: cambiar el separador)</span>
+                                        </li>
+                                    </ul>
+                                    <p class="text-sm text-purple-800 font-semibold">✅ Objetivo: Practicar modificación de código existente</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="learning-card bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border border-orange-300">
+                            <div class="flex items-start gap-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-lg flex items-center justify-center text-xl font-bold">4</div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2">Inspeccionar con DevTools</h3>
+                                    <p class="text-gray-700 mb-3">Usa las herramientas de desarrollo:</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                                            <p class="font-bold text-gray-800 mb-1">🔍 Elements</p>
+                                            <p class="text-sm text-gray-600">Inspecciona la estructura HTML de las tablas y formularios</p>
+                                        </div>
+                                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                                            <p class="font-bold text-gray-800 mb-1">📊 Console</p>
+                                            <p class="text-sm text-gray-600">Ejecuta comandos y ve los logs del sistema</p>
+                                        </div>
+                                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                                            <p class="font-bold text-gray-800 mb-1">💾 Application</p>
+                                            <p class="text-sm text-gray-600">Ve el LocalStorage y sus valores guardados</p>
+                                        </div>
+                                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                                            <p class="font-bold text-gray-800 mb-1">🌐 Network</p>
+                                            <p class="text-sm text-gray-600">Observa la carga de archivos CSS/JS (aunque es local)</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-orange-800 font-semibold mt-3">✅ Objetivo: Dominar las DevTools del navegador</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 6: Recursos Adicionales -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <button class="w-full p-6 flex items-center justify-between accordion-trigger hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">6</div>
+                    <div class="text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Recursos y Mejores Prácticas</h2>
+                        <p class="text-gray-600">Documentación y recomendaciones</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down text-2xl text-gray-400 accordion-icon transition-transform"></i>
+            </button>
+
+            <div class="accordion-content">
+                <div class="p-6 border-t border-gray-200">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-blue-200">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-book text-blue-600"></i>
+                                Documentación del Proyecto
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-file-alt text-blue-500"></i>
+                                    <code class="text-sm">README.md</code> - Introducción general
+                                </li>
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-file-alt text-blue-500"></i>
+                                    <code class="text-sm">INSTRUCCIONES.md</code> - Guía de uso
+                                </li>
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-file-alt text-blue-500"></i>
+                                    <code class="text-sm">VISUAL_DESIGN_SYSTEM.md</code> - Sistema de diseño
+                                </li>
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-file-alt text-blue-500"></i>
+                                    <code class="text-sm">historias-de-usuario.html</code> - Requisitos
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="learning-card bg-white p-6 rounded-lg border-2 border-green-200">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-link text-green-600"></i>
+                                Referencias Externas
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-external-link-alt text-green-500"></i>
+                                    <a href="https://developer.mozilla.org/es/" class="text-blue-600 hover:underline">MDN Web Docs</a>
+                                </li>
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-external-link-alt text-green-500"></i>
+                                    <a href="https://tailwindcss.com/docs" class="text-blue-600 hover:underline">Tailwind CSS Docs</a>
+                                </li>
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <i class="fas fa-external-link-alt text-green-500"></i>
+                                    <a href="https://fontawesome.com/icons" class="text-blue-600 hover:underline">Font Awesome Icons</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="learning-card bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border border-yellow-300">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-star text-yellow-600"></i>
+                            Mejores Prácticas Implementadas
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">Separación de Responsabilidades</p>
+                                    <p class="text-sm text-gray-600">HTML, CSS y JS en archivos separados</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">Código Modular</p>
+                                    <p class="text-sm text-gray-600">Funciones pequeñas y reutilizables</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">Validación Cliente</p>
+                                    <p class="text-sm text-gray-600">Feedback inmediato al usuario</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">Persistencia Local</p>
+                                    <p class="text-sm text-gray-600">Datos guardados sin necesidad de servidor</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">UI Responsive</p>
+                                    <p class="text-sm text-gray-600">Adaptable a diferentes pantallas</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800">Accesibilidad</p>
+                                    <p class="text-sm text-gray-600">Colores, contraste y navegación clara</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t-4 border-blue-600 py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-600 mb-2">
+                <i class="fas fa-graduation-cap text-blue-600 mr-2"></i>
+                Guía de Aprendizaje - Oficina de Partes Digital
+            </p>
+            <p class="text-sm text-gray-500">
+                Municipalidad de Valparaíso © 2025
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.accordion-icon');
+            
+            content.classList.toggle('active');
+            
+            if (content.classList.contains('active')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Abrir primera sección por defecto
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstAccordion = document.querySelector('.accordion-trigger');
+            if (firstAccordion) {
+                const icon = firstAccordion.querySelector('.accordion-icon');
+                if (icon) {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
