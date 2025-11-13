@@ -55,26 +55,7 @@ const APP = {
     asignarUnidadTecnica(id, unidad) {
         const solicitud = this.solicitudes.find(s => s.id === id);
         if (solicitud) {
-            const ahora = new Date().toISOString();
-
-            // Registrar fecha de derivación si no existe
-            if (!solicitud.fechaDerivacion) {
-                solicitud.fechaDerivacion = ahora;
-            }
-
-            // Registrar fecha de inicio en unidad técnica si no existe
-            if (!solicitud.fechaInicioUnidadTecnica) {
-                solicitud.fechaInicioUnidadTecnica = ahora;
-            }
-
-            // Asignar unidad técnica
             solicitud.unidadTecnica = unidad;
-
-            // Inicializar estado de unidad técnica si no existe
-            if (!solicitud.estadoUnidadTecnica) {
-                solicitud.estadoUnidadTecnica = 'en-ejecucion';
-            }
-
             this.guardarSolicitudes();
             return true;
         }
@@ -96,17 +77,8 @@ const APP = {
     cambiarEstadoUnidadTecnica(id, estadoUT) {
         const solicitud = this.solicitudes.find(s => s.id === id);
         if (solicitud) {
-            const ahora = new Date().toISOString();
-
             solicitud.estadoUnidadTecnica = estadoUT;
-            solicitud.fechaActualizacionUT = ahora;
-
-            // Registrar fecha de finalización si el estado es "finalizado"
-            if (estadoUT === 'finalizado' && !solicitud.fechaFinUnidadTecnica) {
-                solicitud.fechaFinUnidadTecnica = ahora;
-                console.log(`📅 Fecha de finalización registrada para ${id}`);
-            }
-
+            solicitud.fechaActualizacionUT = new Date().toISOString();
             this.guardarSolicitudes();
             console.log(`✅ Estado UT actualizado: ${id} -> ${estadoUT}`);
             return true;
@@ -262,7 +234,7 @@ const EstadosUtil = {
         const ahora = new Date();
         const diferenciaTiempo = ahora - fechaCreacionDate;
         const dias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
-
+        
         if (dias === 0) {
             return '<span class="text-sm font-medium" style="color: var(--text-primary);">Hoy</span>';
         } else if (dias === 1) {
@@ -274,147 +246,6 @@ const EstadosUtil = {
         } else {
             return `<span class="text-sm font-medium" style="color: #ef4444;">${dias} días</span>`;
         }
-    },
-
-    // Umbrales de días esperados por etapa
-    umbralesEtapas: {
-        'recepcion': 3,
-        'derivacion': 2,
-        'fiscalizacion': 10,
-        'resolucion': 5
-    },
-
-    // Función para calcular desglose de tiempos por etapa
-    calcularDesgloseEtapas(solicitud) {
-        const etapas = [];
-        const ahora = new Date();
-
-        // Etapa 1: Recepción (desde creación hasta derivación)
-        const fechaCreacion = new Date(solicitud.fechaCreacion);
-        let fechaDerivacion = solicitud.fechaDerivacion ? new Date(solicitud.fechaDerivacion) : null;
-
-        // Si no hay fecha de derivación pero hay unidad técnica, usar fechaCreacion + estimación
-        if (!fechaDerivacion && solicitud.unidadTecnica) {
-            // Estimamos que la derivación fue inmediata para datos legacy
-            fechaDerivacion = new Date(fechaCreacion.getTime() + 24 * 60 * 60 * 1000); // +1 día
-        }
-
-        if (fechaDerivacion) {
-            const diasRecepcion = Math.floor((fechaDerivacion - fechaCreacion) / (1000 * 60 * 60 * 24));
-            etapas.push({
-                nombre: 'Recepción',
-                dias: diasRecepcion,
-                completada: true,
-                excedido: diasRecepcion > this.umbralesEtapas.recepcion
-            });
-        } else {
-            // Todavía en recepción
-            const diasRecepcion = Math.floor((ahora - fechaCreacion) / (1000 * 60 * 60 * 24));
-            etapas.push({
-                nombre: 'Recepción',
-                dias: diasRecepcion,
-                completada: false,
-                excedido: diasRecepcion > this.umbralesEtapas.recepcion
-            });
-            return etapas; // No hay más etapas
-        }
-
-        // Etapa 2: Derivación (trabajo administrativo, 1-2 días típicamente)
-        if (solicitud.unidadTecnica && solicitud.unidadTecnica !== '') {
-            const fechaInicioUT = solicitud.fechaInicioUnidadTecnica ? new Date(solicitud.fechaInicioUnidadTecnica) : fechaDerivacion;
-            const diasDerivacion = Math.floor((fechaInicioUT - fechaDerivacion) / (1000 * 60 * 60 * 24));
-
-            // Si la derivación fue inmediata (mismo día), mostrar al menos 1 día
-            const diasMostrar = diasDerivacion === 0 ? 1 : diasDerivacion;
-
-            etapas.push({
-                nombre: 'Derivación',
-                dias: diasMostrar,
-                completada: true,
-                excedido: diasMostrar > this.umbralesEtapas.derivacion
-            });
-
-            // Etapa 3: Unidad Técnica (Fiscalización, DAT, etc.)
-            const nombreUnidad = this.unidadesNombres[solicitud.unidadTecnica] || solicitud.unidadTecnica;
-            const fechaFinUT = solicitud.fechaFinUnidadTecnica ? new Date(solicitud.fechaFinUnidadTecnica) : null;
-
-            if (fechaFinUT) {
-                // UT completada
-                const diasUT = Math.floor((fechaFinUT - fechaInicioUT) / (1000 * 60 * 60 * 24));
-                etapas.push({
-                    nombre: nombreUnidad,
-                    dias: diasUT,
-                    completada: true,
-                    excedido: diasUT > this.umbralesEtapas.fiscalizacion
-                });
-            } else {
-                // UT en curso
-                const diasUT = Math.floor((ahora - fechaInicioUT) / (1000 * 60 * 60 * 24));
-                etapas.push({
-                    nombre: nombreUnidad,
-                    dias: diasUT,
-                    completada: false,
-                    excedido: diasUT > this.umbralesEtapas.fiscalizacion
-                });
-            }
-        }
-
-        return etapas;
-    },
-
-    // Función para renderizar desglose de tiempos inline
-    renderizarDesgloseInline(solicitud) {
-        const fechaCreacion = new Date(solicitud.fechaCreacion);
-        const ahora = new Date();
-        const diasTotales = Math.floor((ahora - fechaCreacion) / (1000 * 60 * 60 * 24));
-
-        const etapas = this.calcularDesgloseEtapas(solicitud);
-
-        // Color del total según días
-        let colorTotal = 'var(--text-secondary)';
-        if (diasTotales > 30) {
-            colorTotal = '#ef4444'; // rojo
-        } else if (diasTotales > 7) {
-            colorTotal = '#f59e0b'; // amarillo
-        }
-
-        // HTML del total
-        let html = `<div class="text-left" style="min-width: 180px;">`;
-        html += `<div class="text-base font-bold mb-1" style="color: ${colorTotal};">${diasTotales} días</div>`;
-
-        // Desglose de etapas
-        if (etapas.length > 0) {
-            html += `<div class="text-xs" style="line-height: 1.6;">`;
-
-            etapas.forEach((etapa, index) => {
-                const esUltima = index === etapas.length - 1;
-                const prefijo = esUltima ? '└─' : '├─';
-
-                // Color según estado
-                let colorEtapa = 'var(--text-secondary)'; // gris para completadas
-                let icono = '✓'; // check para completadas
-
-                if (!etapa.completada) {
-                    colorEtapa = '#3b82f6'; // azul para en curso
-                    icono = '⏳';
-                    if (etapa.excedido) {
-                        colorEtapa = '#ef4444'; // rojo si excede
-                        icono = '⚠️';
-                    }
-                } else if (etapa.excedido) {
-                    colorEtapa = '#f59e0b'; // amarillo para completadas con exceso
-                }
-
-                html += `<div style="color: ${colorEtapa};">`;
-                html += `${prefijo} ${etapa.nombre}: ${etapa.dias}d ${icono}`;
-                html += `</div>`;
-            });
-
-            html += `</div>`;
-        }
-
-        html += `</div>`;
-        return html;
     }
 };
 
@@ -1618,10 +1449,10 @@ const UnidadTecnicaView = {
         tdEstado.className = 'px-6 py-4';
         tdEstado.innerHTML = EstadosUtil.crearBadgeEstado(solicitud);
 
-        // Columna Días Abierto - AHORA CON DESGLOSE
+        // Columna Días Abierto
         const tdDiasAbierto = document.createElement('td');
-        tdDiasAbierto.className = 'px-6 py-4';
-        tdDiasAbierto.innerHTML = EstadosUtil.renderizarDesgloseInline(solicitud);
+        tdDiasAbierto.className = 'px-6 py-4 text-center';
+        tdDiasAbierto.innerHTML = EstadosUtil.calcularDiasAbierto(solicitud.fechaCreacion);
 
         // Agregar columnas a la fila
         tr.appendChild(tdId);
@@ -1981,10 +1812,7 @@ const DatosDeEjemplo = {
                 descripcion: 'Denuncia por comercio ambulante sin permiso en Avenida Principal esquina con Calle Comercio.',
                 estado: 'pendiente',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'en-ejecucion',
-                fechaCreacion: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // Hace 3 días
-                fechaDerivacion: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000).toISOString(), // Medio día después (rápido)
-                fechaInicioUnidadTecnica: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // Medio día de derivación, 2 días en UT (BAJO el umbral)
+                fechaCreacion: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
             },
             {
                 id: '241110-010',
@@ -1995,10 +1823,7 @@ const DatosDeEjemplo = {
                 descripcion: 'Reclamo por establecimiento comercial que opera fuera del horario permitido y genera ruidos molestos.',
                 estado: 'revision',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'en-ejecucion',
-                fechaCreacion: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // Hace 15 días
-                fechaDerivacion: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(), // 3 días en recepción (EXCEDE umbral de 3)
-                fechaInicioUnidadTecnica: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() // 2 días en derivación, 10 días en UT (JUSTO en umbral)
+                fechaCreacion: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
             },
             {
                 id: '241110-011',
@@ -2009,10 +1834,7 @@ const DatosDeEjemplo = {
                 descripcion: 'Solicitud de fiscalización de obra en construcción sin permiso municipal visible en el sector norte.',
                 estado: 'pendiente',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'en-ejecucion',
-                fechaCreacion: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(), // Hace 18 días
-                fechaDerivacion: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(), // 2 días en recepción (OK)
-                fechaInicioUnidadTecnica: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() // 1 día en derivación (OK), 15 días en UT (EXCEDE mucho - 50% más del umbral)
+                fechaCreacion: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
             },
             {
                 id: '241016-012',
@@ -2023,11 +1845,7 @@ const DatosDeEjemplo = {
                 descripcion: 'Denuncia por local comercial que no cumple con normas sanitarias y de higiene alimentaria.',
                 estado: 'finalizada',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'finalizado',
-                fechaCreacion: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
-                fechaDerivacion: new Date(Date.now() - 23 * 24 * 60 * 60 * 1000).toISOString(), // 2 días después
-                fechaInicioUnidadTecnica: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(), // 1 día después
-                fechaFinUnidadTecnica: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() // Terminado hace 3 días (19 días en UT - EXCEDE umbral de 10)
+                fechaCreacion: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
             },
             {
                 id: '241109-013',
@@ -2038,10 +1856,7 @@ const DatosDeEjemplo = {
                 descripcion: 'Reclamo por vehículos que ocupan espacio público como estacionamiento permanente.',
                 estado: 'revision',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'en-ejecucion',
-                fechaCreacion: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-                fechaDerivacion: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 día después
-                fechaInicioUnidadTecnica: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString() // 1 día después (6 días en UT - bajo umbral)
+                fechaCreacion: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString()
             },
             {
                 id: '241110-014',
@@ -2050,12 +1865,9 @@ const DatosDeEjemplo = {
                 email: 'cgespinoza.d@email.com',
                 telefono: '+56934567012',
                 descripcion: 'Solicitud de inspección por posible cierre irregular de callejón de uso público.',
-                estado: 'revision',
+                estado: 'pendiente',
                 unidadTecnica: 'fiscalizacion',
-                estadoUnidadTecnica: 'en-ejecucion',
-                fechaCreacion: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-                fechaDerivacion: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(), // 4 días después (EXCEDE umbral de 3d)
-                fechaInicioUnidadTecnica: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString() // 2 días después (6 días en UT - bajo umbral)
+                fechaCreacion: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
             }
         ];
 
