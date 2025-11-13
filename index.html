@@ -72,7 +72,11 @@
     <nav class="border-b" style="background: var(--card-bg); border-color: var(--border-card);">
         <div class="container mx-auto px-4">
             <div class="flex gap-2">
-                <button id="tab-ciudadano" class="tab-button active px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
+                <button id="tab-funcionario-correspondencia" class="tab-button active px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <span>Ingreso Funcionario (Correspondencia)</span>
+                </button>
+                <button id="tab-ciudadano" class="tab-button px-6 py-3 text-sm font-medium transition-colors flex items-center gap-2">
                     <i class="fas fa-user"></i>
                     <span>Ingreso Ciudadano (formulario general)</span>
                 </button>
@@ -99,8 +103,294 @@
     <!-- Main Content -->
     <main class="flex-1 container mx-auto px-4 py-8">
 
+        <!-- Vista Funcionario Correspondencia -->
+        <div id="vista-funcionario-correspondencia" class="vista-content">
+            <div class="max-w-4xl mx-auto space-y-8">
+
+                <!-- Formulario de Correspondencia -->
+                <div class="rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(59, 130, 246, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #3b82f6;">
+                                <i class="fas fa-envelope-open-text text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Registro de Correspondencia</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);">Ingreso de correspondencia municipal</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <form id="solicitud-form-corresp" class="space-y-6">
+                            
+                            <!-- SECCIÓN: DATOS DEL REMITENTE -->
+                            <div class="border rounded-lg p-5" style="background: rgba(59, 130, 246, 0.03); border-color: var(--border-card);">
+                                <div class="flex items-center gap-2 mb-4 pb-3 border-b" style="border-color: var(--border-card);">
+                                    <i class="fas fa-user text-blue-500"></i>
+                                    <h4 class="text-sm font-semibold" style="color: var(--text-primary);">Datos del Remitente</h4>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <!-- Tipo de Remitente -->
+                                    <div>
+                                        <label for="tipo-remitente" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Tipo de Remitente <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="tipo-remitente" name="tipo-remitente" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione...</option>
+                                            <option value="ciudadano">Ciudadano</option>
+                                            <option value="institucion">Institución</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Grid para Nombre y Apellido -->
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="nombre-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Nombre <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" id="nombre-corresp" name="nombre-corresp" required
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                   placeholder="Nombre del remitente">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+
+                                        <div>
+                                            <label for="apellido-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Apellido
+                                            </label>
+                                            <input type="text" id="apellido-corresp" name="apellido-corresp"
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                   placeholder="Apellido (opcional para ciudadano)">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Grid para Teléfono y Email -->
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="telefono-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Teléfono <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="tel" id="telefono-corresp" name="telefono-corresp" required
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                   placeholder="+56 9 1234 5678">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+
+                                        <div>
+                                            <label for="email-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Correo Electrónico <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="email" id="email-corresp" name="email-corresp" required
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                   placeholder="correo@ejemplo.com">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dirección -->
+                                    <div>
+                                        <label for="direccion-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Dirección <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="direccion-corresp" name="direccion-corresp" required
+                                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                               style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                               placeholder="Dirección completa">
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECCIÓN: CLASIFICACIÓN DE CORRESPONDENCIA -->
+                            <div class="border rounded-lg p-5" style="background: rgba(16, 185, 129, 0.03); border-color: var(--border-card);">
+                                <div class="flex items-center gap-2 mb-4 pb-3 border-b" style="border-color: var(--border-card);">
+                                    <i class="fas fa-file-alt text-green-500"></i>
+                                    <h4 class="text-sm font-semibold" style="color: var(--text-primary);">Clasificación de Correspondencia</h4>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <!-- Grid para Número de Folio y Fecha/Hora -->
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="numero-folio" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Número de Folio <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" id="numero-folio" name="numero-folio" required
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                   placeholder="Ej: 2024-001234">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+
+                                        <div>
+                                            <label for="fecha-hora-ingreso" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                                Fecha y Hora de Ingreso <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="datetime-local" id="fecha-hora-ingreso" name="fecha-hora-ingreso" required
+                                                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tipo de Documento -->
+                                    <div>
+                                        <label for="tipo-documento" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Tipo de Documento <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="tipo-documento" name="tipo-documento" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione...</option>
+                                            <option value="solicitud-informacion">Solicitud de Información</option>
+                                            <option value="solicitud-audiencia">Solicitud de Audiencia</option>
+                                            <option value="reclamo-operaciones">Reclamo Operaciones</option>
+                                            <option value="infraestructura-obras">Infraestructura/Obras</option>
+                                            <option value="ministro-fe">Ministro de Fe</option>
+                                            <option value="permisos-autorizaciones">Permisos y Autorizaciones</option>
+                                            <option value="consultas-patentes">Consultas sobre Patentes</option>
+                                            <option value="denuncias-fiscalizacion">Denuncias y Fiscalización</option>
+                                            <option value="problemas-vehiculos">Problemas con Vehículos</option>
+                                            <option value="certificados">Certificados</option>
+                                            <option value="beneficios-sociales">Beneficios Sociales</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Canal de Recepción -->
+                                    <div>
+                                        <label for="canal-recepcion" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Canal de Recepción <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="canal-recepcion" name="canal-recepcion" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione...</option>
+                                            <option value="presencial">Presencial</option>
+                                            <option value="correo-electronico">Correo electrónico</option>
+                                            <option value="correo-postal">Correo postal</option>
+                                            <option value="formulario-web">Formulario web ciudadano</option>
+                                            <option value="oficio-institucional">Oficio institucional</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Materia del Documento -->
+                                    <div>
+                                        <label for="materia-documento" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Materia del Documento <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea id="materia-documento" name="materia-documento" rows="4" required
+                                                  class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue resize-none"
+                                                  style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                                  placeholder="Describa brevemente la materia o asunto del documento"></textarea>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Archivo Adjunto -->
+                                    <div>
+                                        <label for="archivo-corresp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Documento Adjunto (opcional)
+                                        </label>
+                                        <div class="flex items-center gap-3">
+                                            <label for="archivo-corresp" class="cursor-pointer px-4 py-2 rounded-lg border transition-colors flex items-center gap-2"
+                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--text-primary);">
+                                                <i class="fas fa-paperclip"></i>
+                                                <span>Seleccionar archivo</span>
+                                            </label>
+                                            <span id="nombre-archivo-corresp" class="text-sm" style="color: var(--text-secondary);">Seleccionar archivo...</span>
+                                            <input type="file" id="archivo-corresp" name="archivo-corresp" class="hidden"
+                                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                                   onchange="actualizarNombreArchivo(this, 'nombre-archivo-corresp')">
+                                        </div>
+                                        <p class="text-xs mt-1" style="color: var(--text-secondary);">
+                                            Formatos permitidos: PDF, Word, Imágenes (máx. 5MB)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="flex gap-3 pt-4">
+                                <button type="submit" class="flex-1 px-6 py-3 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                        style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Registrar Correspondencia</span>
+                                </button>
+                                <button type="button" id="btn-limpiar-corresp" class="px-6 py-3 border rounded-lg font-medium transition-colors flex items-center gap-2"
+                                        style="border-color: var(--border-card); color: var(--text-primary);">
+                                    <i class="fas fa-eraser"></i>
+                                    <span>Limpiar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Resumen de Correspondencia Registrada -->
+                <div id="resumen-correspondencia" class="hidden rounded-lg border overflow-hidden" style="background: var(--card-bg); border-color: var(--border-card);">
+                    <div class="px-5 py-3 border-b" style="background: linear-gradient(to right, rgba(255, 255, 255, 0.02) 0%, rgba(16, 185, 129, 0.12) 100%); border-color: var(--border-card);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #10b981;">
+                                <i class="fas fa-check-circle text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold" style="color: var(--text-primary);">Correspondencia Registrada Exitosamente</h3>
+                                <p class="text-xs" style="color: var(--text-secondary);">El documento ha sido ingresado al sistema</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 space-y-4">
+                        <div class="text-center py-4">
+                            <p class="text-sm mb-2" style="color: var(--text-secondary);">Número de Folio</p>
+                            <p id="numero-folio-resumen" class="text-2xl font-bold" style="color: #3b82f6;"></p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t" style="border-color: var(--border-card);">
+                            <div>
+                                <p class="text-xs mb-1" style="color: var(--text-secondary);">Remitente</p>
+                                <p id="resumen-remitente-corresp" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs mb-1" style="color: var(--text-secondary);">Tipo de Documento</p>
+                                <p id="resumen-tipo-doc-corresp" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs mb-1" style="color: var(--text-secondary);">Correo Electrónico</p>
+                                <p id="resumen-email-corresp" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs mb-1" style="color: var(--text-secondary);">Teléfono</p>
+                                <p id="resumen-telefono-corresp" class="text-sm font-medium" style="color: var(--text-primary);"></p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button id="btn-nueva-correspondencia" class="w-full px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                    style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Registrar Nueva Correspondencia</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <!-- Vista Ciudadano -->
-        <div id="vista-ciudadano" class="vista-content">
+        <div id="vista-ciudadano" class="vista-content hidden">
             <div class="max-w-4xl mx-auto space-y-8">
 
                 <!-- Formulario de Solicitud -->
@@ -312,6 +602,64 @@
                                                   class="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-muni-blue"
                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
                                                   placeholder="Describa detalladamente su solicitud o consulta..."></textarea>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Ubicación del Requerimiento -->
+                                    <div>
+                                        <label for="cerro" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Sector/Cerro <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="cerro" name="cerro" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione un sector...</option>
+                                            <option value="plan-valparaiso">Plan de Valparaíso</option>
+                                            <option value="el-almendral">El Almendral</option>
+                                            <option value="cerro-alegre">Cerro Alegre</option>
+                                            <option value="cerro-concepcion">Cerro Concepción</option>
+                                            <option value="cerro-bellavista">Cerro Bellavista</option>
+                                            <option value="cerro-panteon">Cerro Panteón</option>
+                                            <option value="cerro-carcel">Cerro Cárcel</option>
+                                            <option value="cerro-baron">Cerro Barón</option>
+                                            <option value="cerro-larrain">Cerro Larraín</option>
+                                            <option value="cerro-mariposas">Cerro Mariposas</option>
+                                            <option value="cerro-monjas">Cerro Monjas</option>
+                                            <option value="cerro-santo-domingo">Cerro Santo Domingo</option>
+                                            <option value="cerro-cordillera">Cerro Cordillera</option>
+                                            <option value="cerro-artilleria">Cerro Artillería</option>
+                                            <option value="cerro-playa-ancha">Cerro Playa Ancha</option>
+                                            <option value="cerro-los-placeres">Cerro Los Placeres</option>
+                                            <option value="cerro-esperanza">Cerro Esperanza</option>
+                                            <option value="cerro-ramaditas">Cerro Ramaditas</option>
+                                            <option value="cerro-mesilla">Cerro Mesilla</option>
+                                            <option value="cerro-jimenez">Cerro Jiménez</option>
+                                            <option value="cerro-polanco">Cerro Polanco</option>
+                                            <option value="cerro-toro">Cerro Toro</option>
+                                            <option value="cerro-arrayan">Cerro Arrayán</option>
+                                            <option value="cerro-las-canas">Cerro Las Cañas</option>
+                                            <option value="cerro-rocuant">Cerro Rocuant</option>
+                                            <option value="cerro-san-juan-de-dios">Cerro San Juan de Dios</option>
+                                            <option value="cerro-la-cruz">Cerro La Cruz</option>
+                                            <option value="cerro-san-francisco">Cerro San Francisco</option>
+                                            <option value="cerro-florida">Cerro Florida</option>
+                                            <option value="placilla">Placilla</option>
+                                            <option value="curauma">Curauma</option>
+                                            <option value="laguna-verde">Laguna Verde</option>
+                                            <option value="las-habas">Las Habas</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Ubicación Específica -->
+                                    <div>
+                                        <label for="ubicacion-especifica" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Ubicación Específica <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="ubicacion-especifica" name="ubicacion-especifica" required
+                                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                               style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                               placeholder="Ej: Calle Almirante Montt esquina Urriola, frente a la plaza">
                                         <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
                                     </div>
 
@@ -659,6 +1007,64 @@
                                         <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
                                     </div>
 
+                                    <!-- Ubicación del Requerimiento -->
+                                    <div>
+                                        <label for="cerro-func" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Sector/Cerro <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="cerro-func" name="cerro" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione un sector...</option>
+                                            <option value="plan-valparaiso">Plan de Valparaíso</option>
+                                            <option value="el-almendral">El Almendral</option>
+                                            <option value="cerro-alegre">Cerro Alegre</option>
+                                            <option value="cerro-concepcion">Cerro Concepción</option>
+                                            <option value="cerro-bellavista">Cerro Bellavista</option>
+                                            <option value="cerro-panteon">Cerro Panteón</option>
+                                            <option value="cerro-carcel">Cerro Cárcel</option>
+                                            <option value="cerro-baron">Cerro Barón</option>
+                                            <option value="cerro-larrain">Cerro Larraín</option>
+                                            <option value="cerro-mariposas">Cerro Mariposas</option>
+                                            <option value="cerro-monjas">Cerro Monjas</option>
+                                            <option value="cerro-santo-domingo">Cerro Santo Domingo</option>
+                                            <option value="cerro-cordillera">Cerro Cordillera</option>
+                                            <option value="cerro-artilleria">Cerro Artillería</option>
+                                            <option value="cerro-playa-ancha">Cerro Playa Ancha</option>
+                                            <option value="cerro-los-placeres">Cerro Los Placeres</option>
+                                            <option value="cerro-esperanza">Cerro Esperanza</option>
+                                            <option value="cerro-ramaditas">Cerro Ramaditas</option>
+                                            <option value="cerro-mesilla">Cerro Mesilla</option>
+                                            <option value="cerro-jimenez">Cerro Jiménez</option>
+                                            <option value="cerro-polanco">Cerro Polanco</option>
+                                            <option value="cerro-toro">Cerro Toro</option>
+                                            <option value="cerro-arrayan">Cerro Arrayán</option>
+                                            <option value="cerro-las-canas">Cerro Las Cañas</option>
+                                            <option value="cerro-rocuant">Cerro Rocuant</option>
+                                            <option value="cerro-san-juan-de-dios">Cerro San Juan de Dios</option>
+                                            <option value="cerro-la-cruz">Cerro La Cruz</option>
+                                            <option value="cerro-san-francisco">Cerro San Francisco</option>
+                                            <option value="cerro-florida">Cerro Florida</option>
+                                            <option value="placilla">Placilla</option>
+                                            <option value="curauma">Curauma</option>
+                                            <option value="laguna-verde">Laguna Verde</option>
+                                            <option value="las-habas">Las Habas</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Ubicación Específica -->
+                                    <div>
+                                        <label for="ubicacion-especifica-func" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Ubicación Específica <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="ubicacion-especifica-func" name="ubicacion-especifica" required
+                                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                               style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                               placeholder="Ej: Calle Almirante Montt esquina Urriola, frente a la plaza">
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
                                     <!-- Adjuntar Archivo -->
                                     <div>
                                         <label for="archivo-func" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
@@ -985,6 +1391,64 @@
                                                   class="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-muni-blue"
                                                   style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
                                                   placeholder="Describa detalladamente su solicitud o consulta..."></textarea>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Ubicación del Requerimiento -->
+                                    <div>
+                                        <label for="cerro-esp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Sector/Cerro <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="cerro-esp" name="cerro" required
+                                                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                                style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);">
+                                            <option value="">Seleccione un sector...</option>
+                                            <option value="plan-valparaiso">Plan de Valparaíso</option>
+                                            <option value="el-almendral">El Almendral</option>
+                                            <option value="cerro-alegre">Cerro Alegre</option>
+                                            <option value="cerro-concepcion">Cerro Concepción</option>
+                                            <option value="cerro-bellavista">Cerro Bellavista</option>
+                                            <option value="cerro-panteon">Cerro Panteón</option>
+                                            <option value="cerro-carcel">Cerro Cárcel</option>
+                                            <option value="cerro-baron">Cerro Barón</option>
+                                            <option value="cerro-larrain">Cerro Larraín</option>
+                                            <option value="cerro-mariposas">Cerro Mariposas</option>
+                                            <option value="cerro-monjas">Cerro Monjas</option>
+                                            <option value="cerro-santo-domingo">Cerro Santo Domingo</option>
+                                            <option value="cerro-cordillera">Cerro Cordillera</option>
+                                            <option value="cerro-artilleria">Cerro Artillería</option>
+                                            <option value="cerro-playa-ancha">Cerro Playa Ancha</option>
+                                            <option value="cerro-los-placeres">Cerro Los Placeres</option>
+                                            <option value="cerro-esperanza">Cerro Esperanza</option>
+                                            <option value="cerro-ramaditas">Cerro Ramaditas</option>
+                                            <option value="cerro-mesilla">Cerro Mesilla</option>
+                                            <option value="cerro-jimenez">Cerro Jiménez</option>
+                                            <option value="cerro-polanco">Cerro Polanco</option>
+                                            <option value="cerro-toro">Cerro Toro</option>
+                                            <option value="cerro-arrayan">Cerro Arrayán</option>
+                                            <option value="cerro-las-canas">Cerro Las Cañas</option>
+                                            <option value="cerro-rocuant">Cerro Rocuant</option>
+                                            <option value="cerro-san-juan-de-dios">Cerro San Juan de Dios</option>
+                                            <option value="cerro-la-cruz">Cerro La Cruz</option>
+                                            <option value="cerro-san-francisco">Cerro San Francisco</option>
+                                            <option value="cerro-florida">Cerro Florida</option>
+                                            <option value="placilla">Placilla</option>
+                                            <option value="curauma">Curauma</option>
+                                            <option value="laguna-verde">Laguna Verde</option>
+                                            <option value="las-habas">Las Habas</option>
+                                        </select>
+                                        <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
+                                    </div>
+
+                                    <!-- Ubicación Específica -->
+                                    <div>
+                                        <label for="ubicacion-especifica-esp" class="block text-sm font-medium mb-2" style="color: var(--text-primary);">
+                                            Ubicación Específica <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="ubicacion-especifica-esp" name="ubicacion-especifica" required
+                                               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-muni-blue"
+                                               style="background: var(--input-bg); border-color: var(--input-border); color: var(--input-text);"
+                                               placeholder="Ej: Calle Almirante Montt esquina Urriola, frente a la plaza">
                                         <span class="error-message text-red-500 text-xs mt-1 hidden"></span>
                                     </div>
 
@@ -1539,7 +2003,11 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/app.js"></script>
+    <!-- Data Service (debe cargarse ANTES de app-optimized.js) -->
+    <script src="js/data-service.js?v=2"></script>
+
+    <!-- App principal -->
+    <script src="js/app-optimized.js?v=20241113-2"></script>
     
     <!-- Utilidades Debug -->
     <script>
