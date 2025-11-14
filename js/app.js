@@ -114,19 +114,31 @@ const APP = {
 
 const TabManager = {
     init() {
+        const tabCorrespondencia = document.getElementById('tab-funcionario-correspondencia');
         const tabCiudadano = document.getElementById('tab-ciudadano');
         const tabFuncionarioForm = document.getElementById('tab-funcionario-form');
         const tabFuncionarioEspecifico = document.getElementById('tab-funcionario-especifico');
         const tabFuncionario = document.getElementById('tab-funcionario');
         const tabUnidadTecnica = document.getElementById('tab-unidad-tecnica');
+        const vistaCorrespondencia = document.getElementById('vista-funcionario-correspondencia');
         const vistaCiudadano = document.getElementById('vista-ciudadano');
         const vistaFuncionarioForm = document.getElementById('vista-funcionario-form');
         const vistaFuncionarioEspecifico = document.getElementById('vista-funcionario-especifico');
         const vistaFuncionario = document.getElementById('vista-funcionario');
         const vistaUnidadTecnica = document.getElementById('vista-unidad-tecnica');
 
+        tabCorrespondencia.addEventListener('click', () => {
+            this.activarTab(tabCorrespondencia, vistaCorrespondencia);
+            this.desactivarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
+            this.desactivarTab(tabFuncionario, vistaFuncionario);
+            this.desactivarTab(tabUnidadTecnica, vistaUnidadTecnica);
+        });
+
         tabCiudadano.addEventListener('click', () => {
             this.activarTab(tabCiudadano, vistaCiudadano);
+            this.desactivarTab(tabCorrespondencia, vistaCorrespondencia);
             this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
             this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
             this.desactivarTab(tabFuncionario, vistaFuncionario);
@@ -135,6 +147,7 @@ const TabManager = {
 
         tabFuncionarioForm.addEventListener('click', () => {
             this.activarTab(tabFuncionarioForm, vistaFuncionarioForm);
+            this.desactivarTab(tabCorrespondencia, vistaCorrespondencia);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
             this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
             this.desactivarTab(tabFuncionario, vistaFuncionario);
@@ -143,6 +156,7 @@ const TabManager = {
 
         tabFuncionarioEspecifico.addEventListener('click', () => {
             this.activarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
+            this.desactivarTab(tabCorrespondencia, vistaCorrespondencia);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
             this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
             this.desactivarTab(tabFuncionario, vistaFuncionario);
@@ -151,6 +165,7 @@ const TabManager = {
 
         tabFuncionario.addEventListener('click', () => {
             this.activarTab(tabFuncionario, vistaFuncionario);
+            this.desactivarTab(tabCorrespondencia, vistaCorrespondencia);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
             this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
             this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
@@ -160,6 +175,7 @@ const TabManager = {
 
         tabUnidadTecnica.addEventListener('click', () => {
             this.activarTab(tabUnidadTecnica, vistaUnidadTecnica);
+            this.desactivarTab(tabCorrespondencia, vistaCorrespondencia);
             this.desactivarTab(tabCiudadano, vistaCiudadano);
             this.desactivarTab(tabFuncionarioForm, vistaFuncionarioForm);
             this.desactivarTab(tabFuncionarioEspecifico, vistaFuncionarioEspecifico);
@@ -318,10 +334,122 @@ const Validaciones = {
 
 
 // ============================================
+// 4B. FUNCIÓN GLOBAL PARA SELECCIONAR TIPO DE PERSONA
+// ============================================
+
+let tipoPersonaSeleccionado = null;
+let tipoPersonaSeleccionadoFunc = null;
+
+function seleccionarTipoPersona(tipo) {
+    tipoPersonaSeleccionado = tipo;
+
+    // NO ocultar el selector, solo deshabilitar botones y marcar seleccionado
+    const btnNatural = document.getElementById('btn-persona-natural');
+    const btnJuridica = document.getElementById('btn-persona-juridica');
+
+    // Resetear estilos de ambos botones
+    btnNatural.style.borderColor = 'var(--border-card)';
+    btnNatural.style.borderWidth = '2px';
+    btnNatural.style.opacity = '0.5';
+    btnJuridica.style.borderColor = 'var(--border-card)';
+    btnJuridica.style.borderWidth = '2px';
+    btnJuridica.style.opacity = '0.5';
+
+    // Mostrar formulario debajo
+    document.getElementById('solicitud-form').style.display = 'block';
+
+    // Mostrar/ocultar secciones según tipo
+    const seccionNatural = document.getElementById('seccion-persona-natural');
+    const seccionJuridica = document.getElementById('seccion-persona-juridica');
+
+    if (tipo === 'natural') {
+        seccionNatural.style.display = 'block';
+        seccionJuridica.style.display = 'none';
+
+        // Marcar botón como seleccionado
+        btnNatural.style.borderColor = '#3b82f6';
+        btnNatural.style.borderWidth = '3px';
+        btnNatural.style.opacity = '1';
+        btnNatural.style.background = 'rgba(59, 130, 246, 0.05)';
+    } else if (tipo === 'juridica') {
+        seccionNatural.style.display = 'none';
+        seccionJuridica.style.display = 'block';
+
+        // Marcar botón como seleccionado
+        btnJuridica.style.borderColor = '#8b5cf6';
+        btnJuridica.style.borderWidth = '3px';
+        btnJuridica.style.opacity = '1';
+        btnJuridica.style.background = 'rgba(139, 92, 246, 0.05)';
+    }
+
+    // Hacer scroll suave al formulario
+    setTimeout(() => {
+        document.getElementById('solicitud-form').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 100);
+}
+
+function seleccionarTipoPersonaFunc(tipo) {
+    tipoPersonaSeleccionadoFunc = tipo;
+
+    // NO ocultar el selector, solo deshabilitar botones y marcar seleccionado
+    const btnNatural = document.getElementById('btn-persona-natural-func');
+    const btnJuridica = document.getElementById('btn-persona-juridica-func');
+
+    // Resetear estilos de ambos botones
+    btnNatural.style.borderColor = 'var(--border-card)';
+    btnNatural.style.borderWidth = '2px';
+    btnNatural.style.opacity = '0.5';
+    btnJuridica.style.borderColor = 'var(--border-card)';
+    btnJuridica.style.borderWidth = '2px';
+    btnJuridica.style.opacity = '0.5';
+
+    // Mostrar formulario debajo
+    document.getElementById('solicitud-form-func').style.display = 'block';
+
+    // Mostrar/ocultar secciones según tipo
+    const seccionNatural = document.getElementById('seccion-persona-natural-func');
+    const seccionJuridica = document.getElementById('seccion-persona-juridica-func');
+
+    if (tipo === 'natural') {
+        seccionNatural.style.display = 'block';
+        seccionJuridica.style.display = 'none';
+
+        // Marcar botón como seleccionado
+        btnNatural.style.borderColor = '#3b82f6';
+        btnNatural.style.borderWidth = '3px';
+        btnNatural.style.opacity = '1';
+        btnNatural.style.background = 'rgba(59, 130, 246, 0.05)';
+    } else if (tipo === 'juridica') {
+        seccionNatural.style.display = 'none';
+        seccionJuridica.style.display = 'block';
+
+        // Marcar botón como seleccionado
+        btnJuridica.style.borderColor = '#8b5cf6';
+        btnJuridica.style.borderWidth = '3px';
+        btnJuridica.style.opacity = '1';
+        btnJuridica.style.background = 'rgba(139, 92, 246, 0.05)';
+    }
+
+    // Hacer scroll suave al formulario
+    setTimeout(() => {
+        document.getElementById('solicitud-form-func').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 100);
+}
+
+
+// ============================================
 // 5. FORMULARIO DE SOLICITUD (CIUDADANO)
 // ============================================
 
 const FormularioCiudadano = {
+    tipoPersona: null, // natural o juridica
+
     init() {
         const form = document.getElementById('solicitud-form');
         const btnLimpiar = document.getElementById('btn-limpiar');
@@ -342,16 +470,56 @@ const FormularioCiudadano = {
         btnNuevaSolicitud.addEventListener('click', () => {
             this.ocultarResumen();
             this.limpiarFormulario();
+            this.resetearSelector();
         });
 
         // Validación en tiempo real
         this.agregarValidacionTiempoReal();
     },
 
-    agregarValidacionTiempoReal() {
-        const campos = ['nombre', 'apellido', 'rut', 'nombre-social', 'fecha-nacimiento', 'genero', 'email', 'email2', 'telefono', 'telefono2', 'direccion', 'titulo', 'descripcion', 'cerro', 'ubicacion-especifica'];
+    resetearSelector() {
+        // El selector siempre está visible, solo resetear estilos
 
-        campos.forEach(campoId => {
+        // Ocultar formulario
+        document.getElementById('solicitud-form').style.display = 'none';
+
+        // Resetear estilos de botones
+        const btnNatural = document.getElementById('btn-persona-natural');
+        const btnJuridica = document.getElementById('btn-persona-juridica');
+
+        btnNatural.style.borderColor = 'var(--border-card)';
+        btnNatural.style.borderWidth = '2px';
+        btnNatural.style.opacity = '1';
+        btnNatural.style.background = 'var(--card-bg)';
+
+        btnJuridica.style.borderColor = 'var(--border-card)';
+        btnJuridica.style.borderWidth = '2px';
+        btnJuridica.style.opacity = '1';
+        btnJuridica.style.background = 'var(--card-bg)';
+
+        tipoPersonaSeleccionado = null;
+
+        // Hacer scroll al selector
+        document.getElementById('tipo-persona-selector').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    },
+
+    agregarValidacionTiempoReal() {
+        // Campos de persona natural
+        const camposNatural = ['nombre', 'apellido', 'rut', 'nombre-social', 'fecha-nacimiento', 'genero', 'email', 'email2', 'telefono', 'telefono2', 'direccion'];
+
+        // Campos de persona jurídica
+        const camposJuridica = ['razon-social', 'rut-empresa', 'giro-empresa', 'direccion-empresa', 'nombre-representante', 'apellido-representante', 'rut-representante', 'cargo-representante', 'email-juridica', 'email2-juridica', 'telefono-juridica', 'telefono2-juridica'];
+
+        // Campos comunes
+        const camposComunes = ['titulo', 'descripcion', 'cerro', 'ubicacion-especifica'];
+
+        // Agregar validación a todos los campos
+        const todosCampos = [...camposNatural, ...camposJuridica, ...camposComunes];
+
+        todosCampos.forEach(campoId => {
             const campo = document.getElementById(campoId);
             if (campo) {
                 campo.addEventListener('blur', () => {
@@ -373,6 +541,7 @@ const FormularioCiudadano = {
         let mensaje = '';
 
         // Validar según el tipo de campo
+        // PERSONA NATURAL
         if (campo.id === 'nombre') {
             if (!Validaciones.validarRequerido(valor)) {
                 esValido = false;
@@ -413,7 +582,91 @@ const FormularioCiudadano = {
                 esValido = false;
                 mensaje = 'Teléfono inválido (mínimo 8 dígitos)';
             }
-        } else if (campo.id === 'titulo') {
+        }
+        // PERSONA JURÍDICA
+        else if (campo.id === 'razon-social') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'La razón social es obligatoria';
+            } else if (valor.trim().length < 3) {
+                esValido = false;
+                mensaje = 'La razón social debe tener al menos 3 caracteres';
+            }
+        } else if (campo.id === 'rut-empresa') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El RUT de la empresa es obligatorio';
+            } else if (!Validaciones.validarRUT(valor)) {
+                esValido = false;
+                mensaje = 'RUT inválido (formato: 76.123.456-7)';
+            }
+        } else if (campo.id === 'giro-empresa') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El giro es obligatorio';
+            } else if (valor.trim().length < 3) {
+                esValido = false;
+                mensaje = 'El giro debe tener al menos 3 caracteres';
+            }
+        } else if (campo.id === 'direccion-empresa') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'La dirección de la empresa es obligatoria';
+            } else if (valor.trim().length < 5) {
+                esValido = false;
+                mensaje = 'La dirección debe tener al menos 5 caracteres';
+            }
+        } else if (campo.id === 'nombre-representante') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El nombre del representante es obligatorio';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'El nombre debe tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'apellido-representante') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El apellido del representante es obligatorio';
+            } else if (valor.trim().length < 2) {
+                esValido = false;
+                mensaje = 'El apellido debe tener al menos 2 caracteres';
+            }
+        } else if (campo.id === 'rut-representante') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El RUT del representante es obligatorio';
+            } else if (!Validaciones.validarRUT(valor)) {
+                esValido = false;
+                mensaje = 'RUT inválido (formato: 12.345.678-9)';
+            }
+        } else if (campo.id === 'cargo-representante') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El cargo es obligatorio';
+            } else if (valor.trim().length < 3) {
+                esValido = false;
+                mensaje = 'El cargo debe tener al menos 3 caracteres';
+            }
+        } else if (campo.id === 'email-juridica') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El correo es obligatorio';
+            } else if (!Validaciones.validarEmail(valor)) {
+                esValido = false;
+                mensaje = 'Correo electrónico inválido';
+            }
+        } else if (campo.id === 'telefono-juridica') {
+            if (!Validaciones.validarRequerido(valor)) {
+                esValido = false;
+                mensaje = 'El teléfono es obligatorio';
+            } else if (!Validaciones.validarTelefono(valor)) {
+                esValido = false;
+                mensaje = 'Teléfono inválido (mínimo 8 dígitos)';
+            }
+        }
+        // CAMPOS COMUNES
+        else if (campo.id === 'titulo') {
             if (!Validaciones.validarRequerido(valor)) {
                 esValido = false;
                 mensaje = 'El título es obligatorio';
@@ -454,7 +707,21 @@ const FormularioCiudadano = {
     },
 
     validarFormulario() {
-        const campos = ['nombre', 'apellido', 'rut', 'fecha-nacimiento', 'genero', 'email', 'telefono', 'direccion', 'titulo', 'descripcion', 'cerro', 'ubicacion-especifica'];
+        let campos = [];
+
+        // Campos comunes
+        const camposComunes = ['titulo', 'descripcion', 'cerro', 'ubicacion-especifica'];
+
+        // Validar según tipo de persona
+        if (tipoPersonaSeleccionado === 'natural') {
+            campos = ['nombre', 'apellido', 'rut', 'fecha-nacimiento', 'genero', 'email', 'telefono', 'direccion', ...camposComunes];
+        } else if (tipoPersonaSeleccionado === 'juridica') {
+            campos = ['razon-social', 'rut-empresa', 'giro-empresa', 'direccion-empresa', 'nombre-representante', 'apellido-representante', 'rut-representante', 'cargo-representante', 'email-juridica', 'telefono-juridica', ...camposComunes];
+        } else {
+            alert('Por favor seleccione el tipo de solicitante');
+            return false;
+        }
+
         let formularioValido = true;
 
         campos.forEach(campoId => {
@@ -481,31 +748,54 @@ const FormularioCiudadano = {
         if (inputArchivo.files.length > 0) {
             const archivo = inputArchivo.files[0];
             const maxSize = 5 * 1024 * 1024; // 5MB
-            
+
             if (archivo.size > maxSize) {
                 Validaciones.mostrarError(inputArchivo, 'El archivo no debe superar los 5MB');
                 return;
             }
         }
 
-        // Recoger datos
-        const datos = {
-            nombre: document.getElementById('nombre').value.trim() + ' ' + document.getElementById('apellido').value.trim(),
-            nombreSocial: document.getElementById('nombre-social').value.trim() || null,
-            rut: document.getElementById('rut').value.trim(),
-            fechaNacimiento: document.getElementById('fecha-nacimiento').value,
-            genero: document.getElementById('genero').value,
-            email: document.getElementById('email').value.trim(),
-            email2: document.getElementById('email2').value.trim() || null,
-            telefono: document.getElementById('telefono').value.trim(),
-            telefono2: document.getElementById('telefono2').value.trim() || null,
-            direccion: document.getElementById('direccion').value.trim(),
+        // Recoger datos según el tipo de persona
+        let datos = {
+            tipoPersona: tipoPersonaSeleccionado,
             titulo: document.getElementById('titulo').value.trim(),
             descripcion: document.getElementById('descripcion').value.trim(),
             cerro: document.getElementById('cerro').value,
             ubicacionEspecifica: document.getElementById('ubicacion-especifica').value.trim(),
             archivoNombre: inputArchivo.files.length > 0 ? inputArchivo.files[0].name : null
         };
+
+        if (tipoPersonaSeleccionado === 'natural') {
+            // Datos de persona natural
+            datos.nombre = document.getElementById('nombre').value.trim() + ' ' + document.getElementById('apellido').value.trim();
+            datos.nombreSocial = document.getElementById('nombre-social').value.trim() || null;
+            datos.rut = document.getElementById('rut').value.trim();
+            datos.fechaNacimiento = document.getElementById('fecha-nacimiento').value;
+            datos.genero = document.getElementById('genero').value;
+            datos.email = document.getElementById('email').value.trim();
+            datos.email2 = document.getElementById('email2').value.trim() || null;
+            datos.telefono = document.getElementById('telefono').value.trim();
+            datos.telefono2 = document.getElementById('telefono2').value.trim() || null;
+            datos.direccion = document.getElementById('direccion').value.trim();
+        } else if (tipoPersonaSeleccionado === 'juridica') {
+            // Datos de persona jurídica
+            datos.razonSocial = document.getElementById('razon-social').value.trim();
+            datos.rutEmpresa = document.getElementById('rut-empresa').value.trim();
+            datos.giroEmpresa = document.getElementById('giro-empresa').value.trim();
+            datos.direccionEmpresa = document.getElementById('direccion-empresa').value.trim();
+            datos.nombreRepresentante = document.getElementById('nombre-representante').value.trim() + ' ' + document.getElementById('apellido-representante').value.trim();
+            datos.rutRepresentante = document.getElementById('rut-representante').value.trim();
+            datos.cargoRepresentante = document.getElementById('cargo-representante').value.trim();
+            datos.email = document.getElementById('email-juridica').value.trim();
+            datos.email2 = document.getElementById('email2-juridica').value.trim() || null;
+            datos.telefono = document.getElementById('telefono-juridica').value.trim();
+            datos.telefono2 = document.getElementById('telefono2-juridica').value.trim() || null;
+
+            // Para compatibilidad con el sistema, agregamos estos campos
+            datos.nombre = datos.razonSocial; // Usar razón social como nombre
+            datos.rut = datos.rutEmpresa; // Usar RUT empresa como RUT principal
+            datos.direccion = datos.direccionEmpresa;
+        }
 
         // Agregar solicitud
         const solicitud = APP.agregarSolicitud(datos);
